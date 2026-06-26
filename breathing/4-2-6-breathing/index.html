@@ -33,7 +33,7 @@ body {
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding:30px 12px max(14px,env(safe-area-inset-bottom));
+  padding:28px 12px max(14px,env(safe-area-inset-bottom));
   min-height:100svh;
   overflow-x:hidden;
 }
@@ -164,16 +164,6 @@ button.primary {
   align-items:center;
   justify-content:space-between;
 }
-.settingsToggle .settingsLabel {
-  flex:1;
-  text-align:center;
-}
-.settingsToggle .settingsArrow {
-  width:26px;
-  text-align:right;
-  font-size:18px;
-  opacity:.95;
-}
 .settingsPanel {
   display:grid;
   grid-template-rows:0fr;
@@ -288,7 +278,7 @@ input[type=range] {
     <button id="stopBtn">멈춤</button>
   </section>
 
-  <button id="settingsToggle" class="settingsToggle"><span></span><span class="settingsLabel">설정</span><span id="settingsArrow" class="settingsArrow">▼</span></button>
+  <button id="settingsToggle" class="settingsToggle"><span>설정</span><span id="settingsArrow">▼</span></button>
 
   <section id="settingsPanel" class="settingsPanel">
     <section class="controls">
@@ -345,8 +335,8 @@ const startBtn=document.getElementById('startBtn');
 const stopBtn=document.getElementById('stopBtn');
 const testBtn=document.getElementById('testBtn');
 const settingsToggle=document.getElementById('settingsToggle');
-const settingsPanel=document.getElementById('settingsPanel');
 const settingsArrow=document.getElementById('settingsArrow');
+const settingsPanel=document.getElementById('settingsPanel');
 const roundBtns=[...document.querySelectorAll('.roundBtn')];
 const voiceVol=document.getElementById('voiceVol');
 const chimeVol=document.getElementById('chimeVol');
