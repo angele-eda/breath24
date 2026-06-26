@@ -154,15 +154,27 @@ button.primary {
 }
 .settingsToggle {
   width:100%;
-  margin-top:14px;
-  padding:14px 18px;
-  border-radius:22px;
-  font-size:17px;
-  color:rgba(246,248,255,.9);
-  background:rgba(255,255,255,.075);
+  margin-top:8px;
+  padding:2px 22px 0 0;
+  min-height:34px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:flex-end;
+  color:rgba(246,248,255,.78);
+}
+.settingsToggle:active { transform:none; opacity:.72; }
+.settingsArrow {
+  display:inline-grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  font-size:18px;
+  line-height:1;
+  opacity:.9;
 }
 .settingsPanel {
   display:grid;
@@ -278,7 +290,7 @@ input[type=range] {
     <button id="stopBtn">멈춤</button>
   </section>
 
-  <button id="settingsToggle" class="settingsToggle"><span>설정</span><span id="settingsArrow">▼</span></button>
+  <button id="settingsToggle" class="settingsToggle" aria-label="설정 열기"><span id="settingsArrow" class="settingsArrow">▼</span></button>
 
   <section id="settingsPanel" class="settingsPanel">
     <section class="controls">
