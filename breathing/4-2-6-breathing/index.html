@@ -157,13 +157,10 @@ button.primary {
   display:flex;
   align-items:center;
   justify-content:center;
-  width:32px;
-  height:24px;
+  width:30px;
+  height:30px;
   margin:8px 22px 0 auto;
-  color:rgba(246,248,255,.62);
-  font-size:14px;
-  font-weight:800;
-  line-height:1;
+  color:rgba(246,248,255,.66);
   cursor:pointer;
   background:transparent !important;
   box-shadow:none !important;
@@ -171,6 +168,15 @@ button.primary {
   border-radius:0 !important;
   backdrop-filter:none !important;
   -webkit-backdrop-filter:none !important;
+}
+.settingsToggle svg {
+  width:16px;
+  height:16px;
+  display:block;
+  transition:transform .24s ease, opacity .2s ease;
+}
+.settingsToggle.open svg {
+  transform:rotate(90deg);
 }
 .settingsToggle:active {
   transform:scale(.94);
@@ -290,7 +296,12 @@ input[type=range] {
     <button id="stopBtn">멈춤</button>
   </section>
 
-  <button id="settingsToggle" class="settingsToggle" aria-label="설정 열기">▼</button>
+  <button id="settingsToggle" class="settingsToggle" aria-label="설정 열기" title="설정">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
 
   <section id="settingsPanel" class="settingsPanel">
     <section class="controls">
@@ -567,7 +578,7 @@ async function testVoice() {
 settingsToggle.addEventListener('click', ()=>{
   settingsPanel.classList.toggle('open');
   const opened=settingsPanel.classList.contains('open');
-  settingsToggle.textContent=opened?'▲':'▼';
+  settingsToggle.classList.toggle('open', opened);
   settingsToggle.setAttribute('aria-label', opened?'설정 닫기':'설정 열기');
 });
 
