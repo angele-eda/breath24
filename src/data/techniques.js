@@ -3,13 +3,13 @@ export const PHASE_THEME = {
     colorClass: 'from-teal-100 to-teal-50 dark:from-teal-950/20 dark:to-slate-900',
     circleColor: 'bg-gradient-to-tr from-teal-500 to-emerald-400 shadow-teal-500/30',
     glowColor: 'bg-teal-500/20',
-    scale: 1.35
+    scale: 1.18
   },
   hold: {
     colorClass: 'from-amber-100 to-amber-50 dark:from-amber-950/20 dark:to-slate-900',
     circleColor: 'bg-gradient-to-tr from-amber-500 to-yellow-400 shadow-amber-500/30',
     glowColor: 'bg-amber-500/20',
-    scale: 1.35
+    scale: 1.18
   },
   exhale: {
     colorClass: 'from-sky-100 to-sky-50 dark:from-sky-950/20 dark:to-slate-900',

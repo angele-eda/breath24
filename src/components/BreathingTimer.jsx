@@ -30,8 +30,8 @@ export default function BreathingTimer({
   const overallProgress = Math.min((elapsedTimeSeconds / totalDurationSeconds) * 100, 100);
 
   return (
-    <div className={`fixed inset-0 z-50 flex flex-col justify-between p-6 transition-all duration-1000 ease-in-out bg-gradient-to-b ${theme.colorClass}`}>
-      <div className="w-full max-w-xl mx-auto flex justify-between items-center mt-2">
+    <div className={`fixed inset-0 z-50 grid grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden p-4 md:p-6 transition-all duration-1000 ease-in-out bg-gradient-to-b ${theme.colorClass}`}>
+      <div className="w-full max-w-xl mx-auto flex justify-between items-center">
         <div className="space-y-0.5">
           <span className="text-xs font-bold text-teal-600 dark:text-teal-400 tracking-wider uppercase">
             {techniqueName}
@@ -59,20 +59,20 @@ export default function BreathingTimer({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center py-6">
-        <div className="relative w-80 h-80 flex items-center justify-center">
+      <div className="min-h-0 flex flex-col items-center justify-center py-2 md:py-4">
+        <div className="relative aspect-square w-[min(54vh,18rem)] min-w-56 flex items-center justify-center shrink-0">
           <div
-            className={`absolute inset-0 rounded-full ${theme.glowColor} transition-all ease-in-out`}
+            className={`absolute left-1/2 top-1/2 aspect-square w-full -translate-x-1/2 -translate-y-1/2 rounded-full ${theme.glowColor} transition-all ease-in-out`}
             style={{
-              transform: `scale(${theme.scale})`,
+              transform: `translate(-50%, -50%) scale(${theme.scale})`,
               transitionProperty: 'transform, background-color',
               transitionDuration: `${duration}s`
             }}
           />
           <div
-            className={`absolute w-[60%] h-[60%] rounded-full flex flex-col items-center justify-center text-white shadow-2xl transition-all ease-in-out select-none ${theme.circleColor}`}
+            className={`absolute left-1/2 top-1/2 aspect-square w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center text-white shadow-2xl transition-all ease-in-out select-none ${theme.circleColor}`}
             style={{
-              transform: `scale(${theme.scale})`,
+              transform: `translate(-50%, -50%) scale(${theme.scale})`,
               transitionProperty: 'transform, background-color',
               transitionDuration: `${duration}s`
             }}
@@ -83,7 +83,7 @@ export default function BreathingTimer({
           </div>
         </div>
 
-        <div className="text-center max-w-sm mt-8 space-y-2">
+        <div className="text-center max-w-sm mt-4 md:mt-6 space-y-2">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-800 dark:text-white transition-all duration-500">
             {currentPhaseMeta?.label || '준비'}
           </h1>
@@ -93,7 +93,7 @@ export default function BreathingTimer({
         </div>
       </div>
 
-      <div className="w-full max-w-xl mx-auto space-y-6 mb-4">
+      <div className="w-full max-w-xl mx-auto space-y-3 md:space-y-4 pb-4 md:pb-6">
         <div className="space-y-1">
           <div className="flex justify-between items-center text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase">
             <span className="flex items-center"><Info className="w-3.5 h-3.5 mr-1" /> 진행률</span>
@@ -111,7 +111,7 @@ export default function BreathingTimer({
           {isPaused ? (
             <button
               onClick={onResume}
-              className="w-16 h-16 rounded-full bg-teal-600 dark:bg-teal-500 hover:bg-teal-500 dark:hover:bg-teal-400 text-white flex items-center justify-center shadow-lg hover:shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
+              className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-teal-600 dark:bg-teal-500 hover:bg-teal-500 dark:hover:bg-teal-400 text-white flex items-center justify-center shadow-lg hover:shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
               title="다시 시작"
             >
               <Play className="w-6 h-6 fill-current text-white" />
@@ -119,7 +119,7 @@ export default function BreathingTimer({
           ) : (
             <button
               onClick={onPause}
-              className="w-16 h-16 rounded-full bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-100 flex items-center justify-center shadow-md backdrop-blur-md border border-white/20 dark:border-slate-700/20 active:scale-95 transition-all cursor-pointer"
+              className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-100 flex items-center justify-center shadow-md backdrop-blur-md border border-white/20 dark:border-slate-700/20 active:scale-95 transition-all cursor-pointer"
               title="일시 정지"
             >
               <Pause className="w-6 h-6 fill-current" />

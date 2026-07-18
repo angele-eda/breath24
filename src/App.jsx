@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BarChart2, Compass, Heart, Menu, Settings as SettingsIcon, Sparkles } from 'lucide-react';
+import { BarChart2, Compass, Heart, Menu, Settings as SettingsIcon, Sparkles, X } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import BreathingTimer from './components/BreathingTimer';
 import SessionSummary from './components/SessionSummary';
@@ -25,6 +25,8 @@ export default function App() {
   const [settings, setSettings] = useState(() => getSavedSettings());
   const [sessions, setSessions] = useState(() => getSavedSessions());
   const [selectedTechniqueId, setSelectedTechniqueId] = useState(() => settings.defaultTechniqueId || '4-2-6');
+  const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
+  const [draftProfileName, setDraftProfileName] = useState(() => settings.profileName || '호흡수행자');
 
   const [streakDays, setStreakDays] = useState(0);
   const [todayProgressSeconds, setTodayProgressSeconds] = useState(0);
@@ -78,6 +80,50 @@ export default function App() {
   const handleUpdateSettings = (nextSettings) => {
     setSettings(nextSettings);
     saveSettings(nextSettings);
+  };
+
+  const resizeProfileImage = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const size = 160;
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = size;
+        canvas.height = size;
+
+        const sourceSize = Math.min(image.width, image.height);
+        const sourceX = (image.width - sourceSize) / 2;
+        const sourceY = (image.height - sourceSize) / 2;
+        context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      image.onerror = reject;
+      image.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  const handleProfileImageChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const profileImage = await resizeProfileImage(file);
+    handleUpdateSettings({ ...settingsRef.current, profileImage });
+    event.target.value = '';
+  };
+
+  const saveProfileName = () => {
+    const profileName = draftProfileName.trim() || '호흡수행자';
+    setDraftProfileName(profileName);
+    handleUpdateSettings({ ...settingsRef.current, profileName });
+    setIsProfileEditorOpen(false);
+  };
+
+  const closeProfileEditor = () => {
+    setDraftProfileName(settingsRef.current.profileName || '호흡수행자');
+    setIsProfileEditorOpen(false);
   };
 
   const applyPhase = (index) => {
@@ -244,13 +290,84 @@ export default function App() {
               </div>
             </div>
 
-            <div className="hidden md:flex items-center space-x-1 bg-teal-50 dark:bg-teal-950/20 px-3 py-1 rounded-full text-xs font-semibold text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-900/30">
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center space-x-1 bg-teal-50 dark:bg-teal-950/20 px-2.5 md:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-900/30 whitespace-nowrap">
               <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-500 fill-current" />
-              <span>고요한 호흡 루틴</span>
+              <span className="sm:hidden">호흡 루틴</span>
+              <span className="hidden sm:inline">고요한 호흡 루틴</span>
             </div>
 
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 shadow-sm">
-              <img src={USER_AVATAR_URL} alt="사용자 프로필" className="w-full h-full object-cover" />
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setDraftProfileName(settings.profileName || '호흡수행자');
+                  setIsProfileEditorOpen((open) => !open);
+                }}
+                className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all"
+                title="프로필 바꾸기"
+              >
+                <span className="hidden sm:block max-w-24 truncate text-xs font-bold text-slate-600 dark:text-slate-300">
+                  {settings.profileName || '호흡수행자'}
+                </span>
+                <span className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 shadow-sm">
+                  <img src={settings.profileImage || USER_AVATAR_URL} alt="사용자 프로필" className="w-full h-full object-cover" />
+                </span>
+              </button>
+
+              {isProfileEditorOpen && (
+                <div className="absolute right-0 top-12 z-50 w-72 rounded-2xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 p-4 shadow-xl backdrop-blur-md">
+                  <button
+                    onClick={closeProfileEditor}
+                    className="absolute right-3 top-2 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                    title="닫기"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+
+                  <div className="flex items-center gap-3 pt-4">
+                    <label className="group relative h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-full border border-slate-200 dark:border-slate-700">
+                      <img
+                        src={settings.profileImage || USER_AVATAR_URL}
+                        alt="프로필 미리보기"
+                        className="h-full w-full object-cover transition-opacity group-hover:opacity-75"
+                      />
+                      <span className="absolute inset-0 flex items-center justify-center bg-slate-950/0 text-[10px] font-bold text-white opacity-0 transition-all group-hover:bg-slate-950/35 group-hover:opacity-100">
+                        변경
+                      </span>
+                      <input type="file" accept="image/*" onChange={handleProfileImageChange} className="sr-only" />
+                    </label>
+                    <div className="min-w-0 flex-1">
+                      <label className="block text-[11px] font-bold text-slate-400 mb-1" htmlFor="profile-name">
+                        닉네임
+                      </label>
+                      <input
+                        id="profile-name"
+                        value={draftProfileName}
+                        onChange={(event) => setDraftProfileName(event.target.value)}
+                        maxLength={12}
+                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-sm font-semibold outline-none focus:ring-2 focus:ring-teal-500"
+                        placeholder="닉네임"
+                      />
+                    </div>
+                  </div>
+
+                  <p className="mt-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                    <span className="font-semibold text-teal-500 dark:text-teal-300">얼굴이 가운데 오게 올리면</span> 원형 사진에 잘 맞습니다. 사진과 닉네임은 내 기기에만 저장되며 다른 사람에게 보이지 않습니다.
+                  </p>
+
+                  <div className="mt-4 flex gap-2">
+                    <label className="flex-1 cursor-pointer rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2 text-center text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                      사진 선택
+                      <input type="file" accept="image/*" onChange={handleProfileImageChange} className="sr-only" />
+                    </label>
+                    <button
+                      onClick={saveProfileName}
+                      className="flex-1 rounded-xl bg-teal-600 px-3 py-2 text-xs font-bold text-white hover:bg-teal-500"
+                    >
+                      저장
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -304,6 +421,8 @@ export default function App() {
             totalSessionsCount={totalSessionsCount}
             totalMindfulMinutes={totalMindfulMinutes}
             onClearHistory={handleClearHistory}
+            profileName={settings.profileName}
+            profileImage={settings.profileImage}
           />
         )}
         {currentScreen === 'settings' && <SettingsSection settings={settings} onUpdateSettings={handleUpdateSettings} />}

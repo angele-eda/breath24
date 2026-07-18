@@ -18,8 +18,8 @@ export default function Dashboard({
   const minutesToday = Math.floor(todayProgressSeconds / 60);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-8 py-4 space-y-8 animate-fade-in">
-      <div className="text-center space-y-3 pt-4 md:pt-8">
+    <div className="home-dashboard w-full max-w-5xl mx-auto px-4 md:px-8 py-4 md:py-3 space-y-8 md:space-y-4 animate-fade-in">
+      <div className="home-hero-copy hidden text-center space-y-3 pt-4">
         <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-800 dark:text-white transition-all duration-300">
           호흡하고 편안해지기
         </h1>
@@ -28,8 +28,8 @@ export default function Dashboard({
         </p>
       </div>
 
-      <div className="flex justify-center py-6">
-        <div className="relative w-64 h-64 md:w-72 md:h-72 flex items-center justify-center">
+      <div className="flex justify-center py-4 md:py-5">
+        <div className="home-start-ring relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
           <div className="absolute inset-0 rounded-full bg-teal-500/10 dark:bg-teal-400/10 animate-pulse-slow scale-110" />
           <div className="absolute w-[80%] h-[80%] rounded-full bg-teal-500/20 dark:bg-teal-400/15 animate-pulse-slow scale-100 delay-700" />
           <button

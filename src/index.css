@@ -49,3 +49,19 @@
 .animate-inhale {
   animation: breatheInhale 4s ease-in-out infinite alternate;
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .home-dashboard {
+    padding-top: 0.75rem;
+    row-gap: 1rem;
+  }
+
+  .home-hero-copy {
+    display: none;
+  }
+
+  .home-start-ring {
+    width: min(20rem, 52vh);
+    height: min(20rem, 52vh);
+  }
+}

@@ -9,6 +9,8 @@ const DEFAULT_SETTINGS = {
   darkMode: true,
   defaultTechniqueId: '4-2-6',
   voiceRate: 0.92,
+  profileName: '호흡수행자',
+  profileImage: '',
   customInhale: 4,
   customHold: 2,
   customExhale: 6,

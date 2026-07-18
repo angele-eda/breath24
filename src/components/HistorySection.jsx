@@ -7,7 +7,9 @@ export default function HistorySection({
   sessions,
   totalSessionsCount,
   totalMindfulMinutes,
-  onClearHistory
+  onClearHistory,
+  profileName,
+  profileImage
 }) {
   const formatDateString = (timestamp) => {
     const date = new Date(timestamp);
@@ -42,13 +44,13 @@ export default function HistorySection({
       <div className="glass-panel rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white dark:border-slate-800 shadow-md overflow-hidden bg-teal-50 flex-shrink-0">
-            <img src={USER_AVATAR_URL} alt="호흡 수행자" className="w-full h-full object-cover" />
+            <img src={profileImage || USER_AVATAR_URL} alt="호흡 수행자" className="w-full h-full object-cover" />
           </div>
 
           <div className="space-y-3 flex-1">
             <div>
               <div className="flex items-center justify-center sm:justify-start space-x-1.5">
-                <h2 className="text-xl font-extrabold text-slate-800 dark:text-white">호흡 수행자</h2>
+                <h2 className="text-xl font-extrabold text-slate-800 dark:text-white">{profileName || '호흡수행자'}</h2>
                 <span className="bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center">
                   <Star className="w-3 h-3 fill-current mr-0.5" /> 레벨 1
                 </span>
