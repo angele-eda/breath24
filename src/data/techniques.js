@@ -31,7 +31,7 @@ export const TECHNIQUES = [
     name: '4-2-6 안정 호흡',
     description: '4초 들이마시고 2초 멈춘 뒤 6초 길게 내쉬는 기본 안정 호흡입니다.',
     rhythm: '4-2-6',
-    introAudio: '/audio/426_intro.wav',
+    introAudio: '/audio/intro/ko-4-2-6-male.wav',
     outroAudio: '/audio/426_outro.wav',
     phases: [
       { type: 'inhale', label: '들이마셔', speech: '들이마셔', seconds: 4, instruction: '넷까지 부드럽게 들이마셔요.' },

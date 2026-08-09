@@ -23,6 +23,13 @@ export default function SessionSummary({
     return `${secs}초`;
   };
 
+  const formatChartTime = (totalSec) => {
+    const safeSeconds = Math.max(0, Math.floor(totalSec || 0));
+    const minutes = Math.floor(safeSeconds / 60);
+    const seconds = safeSeconds % 60;
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+  };
+
   const getRenderRhythm = () => {
     if (sessionRhythm?.length >= 5) return sessionRhythm;
     const pointsCount = Math.max(12, cyclesCompleted * 3);
@@ -34,101 +41,138 @@ export default function SessionSummary({
 
   const finalRhythm = getRenderRhythm();
   const maxRhythmVal = Math.max(...finalRhythm, 10);
+  const chartWidth = 320;
+  const chartBaseline = 96;
+  const rhythmPoints = finalRhythm.map((value, index) => ({
+    x: (index / Math.max(finalRhythm.length - 1, 1)) * chartWidth,
+    y: chartBaseline - (value / maxRhythmVal) * 68
+  }));
+  const rhythmLinePath = rhythmPoints.reduce((path, point, index) => {
+    if (index === 0) return `M ${point.x} ${point.y}`;
+    const previous = rhythmPoints[index - 1];
+    const controlX = (previous.x + point.x) / 2;
+    return `${path} C ${controlX} ${previous.y}, ${controlX} ${point.y}, ${point.x} ${point.y}`;
+  }, '');
+  const rhythmAreaPath = rhythmPoints.length
+    ? `${rhythmLinePath} L ${rhythmPoints[rhythmPoints.length - 1].x} ${chartBaseline} L ${rhythmPoints[0].x} ${chartBaseline} Z`
+    : '';
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8 space-y-8 animate-fade-in">
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 mb-2">
-          <Sparkles className="w-8 h-8 fill-current text-teal-500 animate-pulse" />
+    <div className="w-full max-w-3xl mx-auto px-5 py-8 space-y-6 animate-fade-in">
+      <section className="rounded-lg border border-white/10 bg-slate-900/60 p-7 text-center text-slate-100 shadow-sm dark:bg-slate-800/50">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-teal-300/30 bg-teal-300/10 text-teal-300 shadow-[0_0_32px_rgba(45,212,191,0.14)]">
+          <Sparkles className="h-8 w-8 fill-current" />
         </div>
-        <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">
           호흡을 완료했습니다
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-400">
           방금 만든 고요함을 기록으로 남겨 다음 루틴에 이어갈 수 있어요.
         </p>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="glass-panel p-5 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <Clock className="w-5 h-5 text-teal-600 dark:text-teal-400 mb-2" />
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">호흡 시간</span>
-          <span className="text-lg font-bold text-slate-800 dark:text-slate-100 mt-1">{formatDurationLabel(elapsedTimeSeconds)}</span>
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-center text-slate-100">
+          <Clock className="mx-auto mb-2 h-5 w-5 text-teal-300" />
+          <span className="text-[10px] font-bold uppercase text-slate-500">호흡 시간</span>
+          <span className="mt-1 block text-lg font-bold text-white">{formatDurationLabel(elapsedTimeSeconds)}</span>
         </div>
 
-        <div className="glass-panel p-5 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <RotateCcw className="w-5 h-5 text-teal-600 dark:text-teal-400 mb-2 animate-spin-slow" />
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">완료 사이클</span>
-          <span className="text-lg font-bold text-slate-800 dark:text-slate-100 mt-1">{cyclesCompleted}사이클</span>
+        <div className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-center text-slate-100">
+          <RotateCcw className="mx-auto mb-2 h-5 w-5 text-teal-300" />
+          <span className="text-[10px] font-bold uppercase text-slate-500">완료 사이클</span>
+          <span className="mt-1 block text-lg font-bold text-white">{cyclesCompleted}사이클</span>
         </div>
 
-        <div className="glass-panel p-5 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-          <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400 mb-2" />
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">호흡법</span>
-          <span className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 line-clamp-1">{techniqueName}</span>
+        <div className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-center text-slate-100">
+          <Calendar className="mx-auto mb-2 h-5 w-5 text-teal-300" />
+          <span className="text-[10px] font-bold uppercase text-slate-500">호흡법</span>
+          <span className="mt-1 block truncate text-sm font-bold text-white">{techniqueName}</span>
         </div>
-      </div>
+      </section>
 
-      <div className="glass-panel rounded-2xl p-6 shadow-sm space-y-4">
-        <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase text-center">
+      <section className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-slate-100">
+        <h3 className="text-center text-xs font-bold uppercase tracking-widest text-slate-500">
           실시간 호흡 리듬
         </h3>
 
-        <div className="h-28 flex items-end justify-between px-2 gap-1.5 pt-4">
-          {finalRhythm.map((value, index) => (
-            <div
-              key={index}
-              className="flex-1 rounded-t-md bg-gradient-to-t from-teal-500/80 to-teal-400 transition-all duration-700 ease-out"
-              style={{ height: `${(value / maxRhythmVal) * 100}%` }}
-              title={`리듬 강도: ${value}`}
+        <div className="mt-4 h-28 px-2">
+          <svg
+            className="h-full w-full overflow-visible"
+            viewBox={`0 0 ${chartWidth} 104`}
+            role="img"
+            aria-label="세션 동안의 호흡 리듬 변화"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="rhythm-line" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#2dd4bf" />
+                <stop offset="100%" stopColor="#67e8f9" />
+              </linearGradient>
+              <linearGradient id="rhythm-area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#2dd4bf" stopOpacity="0.22" />
+                <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1={chartBaseline} x2={chartWidth} y2={chartBaseline} stroke="currentColor" strokeOpacity="0.12" />
+            <path d={rhythmAreaPath} fill="url(#rhythm-area)" />
+            <path
+              d={rhythmLinePath}
+              fill="none"
+              stroke="url(#rhythm-line)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
             />
-          ))}
+          </svg>
         </div>
 
-        <div className="flex justify-between text-[10px] text-slate-400 font-semibold px-1">
-          <span>시작</span>
-          <span>리듬 흐름</span>
-          <span>종료</span>
+        <div className="mt-3 flex justify-between px-1 text-[10px] font-bold text-slate-500">
+          <span>{formatChartTime(0)}</span>
+          <span>{formatChartTime(elapsedTimeSeconds / 2)}</span>
+          <span>{formatChartTime(elapsedTimeSeconds)}</span>
         </div>
-      </div>
+      </section>
 
-      <div className="glass-panel rounded-2xl p-6 shadow-sm space-y-5">
-        <div className="space-y-1">
-          <label htmlFor="session-name" className="text-xs font-bold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-            세션 이름
-          </label>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500">
-            기록 화면에서 알아보기 쉬운 이름으로 저장하세요.
-          </p>
-        </div>
-
+      <section className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-slate-100">
+        <label htmlFor="session-name" className="text-xs font-bold uppercase tracking-widest text-slate-500">
+          세션 이름
+        </label>
+        <p className="mt-1 text-[11px] text-slate-500">
+          기록 화면에서 알아보기 쉬운 이름으로 저장하세요.
+        </p>
         <input
           type="text"
           id="session-name"
           value={sessionName}
           onChange={(event) => setSessionName(event.target.value)}
           maxLength={30}
-          className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all duration-300 font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400"
+          className="mt-4 w-full rounded-lg border border-white/10 bg-slate-950/40 px-4 py-3 text-sm font-bold text-slate-100 outline-none transition focus:border-teal-300/60 focus:ring-2 focus:ring-teal-300/20"
           placeholder="세션 이름을 입력하세요"
         />
-      </div>
+      </section>
 
-      <div className="flex flex-col sm:flex-row gap-4 pt-4">
+      <div className="flex flex-col gap-3 pt-2 sm:flex-row">
         <button
           onClick={onDiscard}
-          className="sm:order-1 sm:w-1/3 py-3.5 rounded-xl border border-rose-200 dark:border-rose-950/40 text-rose-500 dark:text-rose-400 hover:bg-rose-500/10 active:scale-95 transition-all font-semibold flex items-center justify-center space-x-2 cursor-pointer"
+          className="rounded-lg border border-rose-400/25 px-4 py-3.5 font-bold text-rose-300 transition hover:bg-rose-500/10 active:scale-95 sm:w-1/3"
         >
-          <Trash2 className="w-5 h-5" />
-          <span>기록하지 않기</span>
+          <span className="inline-flex items-center justify-center gap-2">
+            <Trash2 className="h-5 w-5" />
+            기록하지 않기
+          </span>
         </button>
 
         <button
           onClick={() => onSave(sessionName)}
           disabled={!sessionName.trim()}
-          className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 dark:from-teal-500 dark:to-teal-400 text-white hover:opacity-90 active:scale-95 disabled:opacity-50 transition-all font-semibold flex items-center justify-center space-x-2 cursor-pointer shadow-lg hover:shadow-teal-500/10"
+          className="flex-1 rounded-lg bg-gradient-to-r from-teal-500 to-cyan-300 px-4 py-3.5 font-bold text-slate-950 shadow-[0_0_32px_rgba(45,212,191,0.14)] transition hover:opacity-90 active:scale-95 disabled:opacity-50"
         >
-          <Save className="w-5 h-5" />
-          <span>호흡 기록 저장</span>
+          <span className="inline-flex items-center justify-center gap-2">
+            <Save className="h-5 w-5" />
+            호흡 기록 저장
+          </span>
         </button>
       </div>
     </div>

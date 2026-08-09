@@ -5,6 +5,9 @@ const DEFAULT_SETTINGS = {
   defaultDurationSeconds: 300,
   soundCuesEnabled: true,
   voiceCuesEnabled: true,
+  voiceCuesDefaultedOff: true,
+  introVoiceEnabledByDefaultV1: true,
+  voiceGender: 'female',
   vibrationCuesEnabled: true,
   darkMode: true,
   defaultTechniqueId: '4-2-6',
@@ -20,7 +23,22 @@ const DEFAULT_SETTINGS = {
 export function getSavedSettings() {
   try {
     const saved = localStorage.getItem(SETTINGS_KEY);
-    if (saved) return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const migrated = { ...DEFAULT_SETTINGS, ...parsed };
+      if (!parsed.voiceCuesDefaultedOff) {
+        migrated.voiceCuesEnabled = false;
+        migrated.voiceCuesDefaultedOff = true;
+      }
+      if (!parsed.introVoiceEnabledByDefaultV1) {
+        migrated.voiceCuesEnabled = true;
+        migrated.introVoiceEnabledByDefaultV1 = true;
+      }
+      if (!['female', 'male'].includes(parsed.voiceGender)) {
+        migrated.voiceGender = 'female';
+      }
+      return migrated;
+    }
   } catch (error) {
     console.error('Error reading settings from localStorage:', error);
   }

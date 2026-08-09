@@ -77,14 +77,14 @@ export default function BreathingTimer({
               transitionDuration: `${duration}s`
             }}
           >
-            <span className="text-6xl font-extrabold tracking-tighter tabular-nums drop-shadow-sm">
+            <span className="text-6xl font-bold tracking-tighter tabular-nums drop-shadow-sm">
               {phaseTimeRemaining}
             </span>
           </div>
         </div>
 
         <div className="text-center max-w-sm mt-4 md:mt-6 space-y-2">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-800 dark:text-white transition-all duration-500">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-800 dark:text-white transition-all duration-500">
             {currentPhaseMeta?.label || '준비'}
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 min-h-10 px-4 leading-relaxed transition-all duration-500">
@@ -108,36 +108,34 @@ export default function BreathingTimer({
         </div>
 
         <div className="flex items-center justify-center space-x-6">
-          {isPaused ? (
-            <button
-              onClick={onResume}
-              className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-teal-600 dark:bg-teal-500 hover:bg-teal-500 dark:hover:bg-teal-400 text-white flex items-center justify-center shadow-lg hover:shadow-teal-500/20 active:scale-95 transition-all cursor-pointer"
-              title="다시 시작"
-            >
+          <button
+            onClick={isPaused ? onResume : onPause}
+            className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-md backdrop-blur-md border active:scale-95 transition-all cursor-pointer ${
+              isPaused
+                ? 'bg-teal-600 dark:bg-teal-500 hover:bg-teal-500 dark:hover:bg-teal-400 text-white border-teal-500/40'
+                : 'bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-100 border-white/20 dark:border-slate-700/20'
+            }`}
+            title={isPaused ? '계속하기' : '일시 정지'}
+          >
+            {isPaused ? (
               <Play className="w-6 h-6 fill-current text-white" />
-            </button>
-          ) : (
-            <button
-              onClick={onPause}
-              className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/40 dark:bg-slate-800/40 hover:bg-white/60 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-100 flex items-center justify-center shadow-md backdrop-blur-md border border-white/20 dark:border-slate-700/20 active:scale-95 transition-all cursor-pointer"
-              title="일시 정지"
-            >
+            ) : (
               <Pause className="w-6 h-6 fill-current" />
-            </button>
-          )}
+            )}
+          </button>
 
           <button
             onClick={onStop}
             className="w-12 h-12 rounded-full bg-rose-500/20 dark:bg-rose-500/10 hover:bg-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-500/30 active:scale-95 transition-all cursor-pointer"
-            title="중단하고 결과 확인"
+            title="종료"
           >
             <Square className="w-5 h-5 fill-current" />
           </button>
         </div>
 
         {isPaused && (
-          <div className="text-center text-xs text-amber-600 dark:text-amber-400 animate-pulse font-semibold">
-            호흡이 잠시 멈췄습니다. 다시 시작 버튼을 누르면 이어서 진행됩니다.
+          <div className="text-center text-xs text-amber-600 dark:text-amber-400 font-semibold">
+            호흡이 잠시 멈췄습니다. 재생 버튼을 누르면 이어서 진행됩니다.
           </div>
         )}
       </div>
