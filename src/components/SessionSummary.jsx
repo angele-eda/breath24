@@ -8,19 +8,21 @@ export default function SessionSummary({
   techniqueName,
   sessionRhythm,
   onSave,
-  onDiscard
+  onDiscard,
+  language = 'ko'
 }) {
+  const isEnglish = language === 'en';
   const [sessionName, setSessionName] = useState('');
 
   useEffect(() => {
-    setSessionName(determineSessionNameByTime(Date.now()));
-  }, []);
+    setSessionName(isEnglish ? 'Calm breathing session' : determineSessionNameByTime(Date.now()));
+  }, [isEnglish]);
 
   const formatDurationLabel = (totalSec) => {
     const mins = Math.floor(totalSec / 60);
     const secs = totalSec % 60;
-    if (mins > 0) return `${mins}분${secs > 0 ? ` ${secs}초` : ''}`;
-    return `${secs}초`;
+    if (mins > 0) return isEnglish ? `${mins} min${secs > 0 ? ` ${secs} sec` : ''}` : `${mins}분${secs > 0 ? ` ${secs}초` : ''}`;
+    return isEnglish ? `${secs} sec` : `${secs}초`;
   };
 
   const formatChartTime = (totalSec) => {
@@ -39,7 +41,12 @@ export default function SessionSummary({
     });
   };
 
-  const finalRhythm = getRenderRhythm();
+  const rawRhythm = getRenderRhythm();
+  const finalRhythm = rawRhythm.map((value, index) => {
+    const previous = rawRhythm[Math.max(0, index - 1)];
+    const next = rawRhythm[Math.min(rawRhythm.length - 1, index + 1)];
+    return previous * 0.2 + value * 0.6 + next * 0.2;
+  });
   const maxRhythmVal = Math.max(...finalRhythm, 10);
   const chartWidth = 320;
   const chartBaseline = 96;
@@ -47,12 +54,22 @@ export default function SessionSummary({
     x: (index / Math.max(finalRhythm.length - 1, 1)) * chartWidth,
     y: chartBaseline - (value / maxRhythmVal) * 68
   }));
-  const rhythmLinePath = rhythmPoints.reduce((path, point, index) => {
-    if (index === 0) return `M ${point.x} ${point.y}`;
-    const previous = rhythmPoints[index - 1];
-    const controlX = (previous.x + point.x) / 2;
-    return `${path} C ${controlX} ${previous.y}, ${controlX} ${point.y}, ${point.x} ${point.y}`;
-  }, '');
+  const rhythmLinePath = rhythmPoints.length
+    ? rhythmPoints.slice(0, -1).reduce((path, point, index) => {
+        const previous = rhythmPoints[Math.max(0, index - 1)];
+        const next = rhythmPoints[index + 1];
+        const following = rhythmPoints[Math.min(rhythmPoints.length - 1, index + 2)];
+        const control1 = {
+          x: point.x + (next.x - previous.x) / 6,
+          y: point.y + (next.y - previous.y) / 6
+        };
+        const control2 = {
+          x: next.x - (following.x - point.x) / 6,
+          y: next.y - (following.y - point.y) / 6
+        };
+        return `${path} C ${control1.x} ${control1.y}, ${control2.x} ${control2.y}, ${next.x} ${next.y}`;
+      }, `M ${rhythmPoints[0].x} ${rhythmPoints[0].y}`)
+    : '';
   const rhythmAreaPath = rhythmPoints.length
     ? `${rhythmLinePath} L ${rhythmPoints[rhythmPoints.length - 1].x} ${chartBaseline} L ${rhythmPoints[0].x} ${chartBaseline} Z`
     : '';
@@ -60,40 +77,40 @@ export default function SessionSummary({
   return (
     <div className="w-full max-w-3xl mx-auto px-5 py-8 space-y-6 animate-fade-in">
       <section className="rounded-lg border border-white/10 bg-slate-900/60 p-7 text-center text-slate-100 shadow-sm dark:bg-slate-800/50">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-teal-300/30 bg-teal-300/10 text-teal-300 shadow-[0_0_32px_rgba(45,212,191,0.14)]">
-          <Sparkles className="h-8 w-8 fill-current" />
+        <div className="summary-completion-orb mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-teal-300/30 bg-teal-300/10 text-teal-300 shadow-[0_0_32px_rgba(45,212,191,0.14)]">
+          <Sparkles className="summary-sparkles-icon h-8 w-8 fill-current" />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">
-          호흡을 완료했습니다
+        <h1 className="summary-completion-title text-2xl font-bold tracking-tight text-white md:text-4xl">
+          {isEnglish ? 'Breathing complete' : '호흡을 완료했습니다'}
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-400">
-          방금 만든 고요함을 기록으로 남겨 다음 루틴에 이어갈 수 있어요.
+          {isEnglish ? 'Save this moment of calm and carry it into your next routine.' : '방금 만든 고요함을 기록으로 남겨 다음 루틴에 이어갈 수 있어요.'}
         </p>
       </section>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-center text-slate-100">
           <Clock className="mx-auto mb-2 h-5 w-5 text-teal-300" />
-          <span className="text-[10px] font-bold uppercase text-slate-500">호흡 시간</span>
+          <span className="text-[10px] font-bold uppercase text-slate-500">{isEnglish ? 'Breathing time' : '호흡 시간'}</span>
           <span className="mt-1 block text-lg font-bold text-white">{formatDurationLabel(elapsedTimeSeconds)}</span>
         </div>
 
         <div className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-center text-slate-100">
           <RotateCcw className="mx-auto mb-2 h-5 w-5 text-teal-300" />
-          <span className="text-[10px] font-bold uppercase text-slate-500">완료 사이클</span>
-          <span className="mt-1 block text-lg font-bold text-white">{cyclesCompleted}사이클</span>
+          <span className="text-[10px] font-bold uppercase text-slate-500">{isEnglish ? 'Completed cycles' : '완료 사이클'}</span>
+          <span className="mt-1 block text-lg font-bold text-white">{cyclesCompleted}{isEnglish ? ' cycles' : '사이클'}</span>
         </div>
 
         <div className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-center text-slate-100">
           <Calendar className="mx-auto mb-2 h-5 w-5 text-teal-300" />
-          <span className="text-[10px] font-bold uppercase text-slate-500">호흡법</span>
+          <span className="text-[10px] font-bold uppercase text-slate-500">{isEnglish ? 'Technique' : '호흡법'}</span>
           <span className="mt-1 block truncate text-sm font-bold text-white">{techniqueName}</span>
         </div>
       </section>
 
       <section className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-slate-100">
         <h3 className="text-center text-xs font-bold uppercase tracking-widest text-slate-500">
-          실시간 호흡 리듬
+          {isEnglish ? 'Live breathing rhythm' : '실시간 호흡 리듬'}
         </h3>
 
         <div className="mt-4 h-28 px-2">
@@ -101,7 +118,7 @@ export default function SessionSummary({
             className="h-full w-full overflow-visible"
             viewBox={`0 0 ${chartWidth} 104`}
             role="img"
-            aria-label="세션 동안의 호흡 리듬 변화"
+            aria-label={isEnglish ? 'Breathing rhythm during the session' : '세션 동안의 호흡 리듬 변화'}
             preserveAspectRatio="none"
           >
             <defs>
@@ -120,7 +137,7 @@ export default function SessionSummary({
               d={rhythmLinePath}
               fill="none"
               stroke="url(#rhythm-line)"
-              strokeWidth="2.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               vectorEffect="non-scaling-stroke"
@@ -137,10 +154,10 @@ export default function SessionSummary({
 
       <section className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-slate-100">
         <label htmlFor="session-name" className="text-xs font-bold uppercase tracking-widest text-slate-500">
-          세션 이름
+          {isEnglish ? 'Session name' : '세션 이름'}
         </label>
         <p className="mt-1 text-[11px] text-slate-500">
-          기록 화면에서 알아보기 쉬운 이름으로 저장하세요.
+          {isEnglish ? 'Choose a name that will be easy to recognize in History.' : '기록 화면에서 알아보기 쉬운 이름으로 저장하세요.'}
         </p>
         <input
           type="text"
@@ -149,7 +166,7 @@ export default function SessionSummary({
           onChange={(event) => setSessionName(event.target.value)}
           maxLength={30}
           className="mt-4 w-full rounded-lg border border-white/10 bg-slate-950/40 px-4 py-3 text-sm font-bold text-slate-100 outline-none transition focus:border-teal-300/60 focus:ring-2 focus:ring-teal-300/20"
-          placeholder="세션 이름을 입력하세요"
+          placeholder={isEnglish ? 'Enter a session name' : '세션 이름을 입력하세요'}
         />
       </section>
 
@@ -160,7 +177,7 @@ export default function SessionSummary({
         >
           <span className="inline-flex items-center justify-center gap-2">
             <Trash2 className="h-5 w-5" />
-            기록하지 않기
+            {isEnglish ? 'Discard' : '기록하지 않기'}
           </span>
         </button>
 
@@ -171,7 +188,7 @@ export default function SessionSummary({
         >
           <span className="inline-flex items-center justify-center gap-2">
             <Save className="h-5 w-5" />
-            호흡 기록 저장
+            {isEnglish ? 'Save breathing record' : '호흡 기록 저장'}
           </span>
         </button>
       </div>

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Activity, ArrowRight, Box, Compass, Flame, Moon, Sparkles, Trophy, Waves, Wind } from 'lucide-react';
 import { TECHNIQUES, getDurationLabel } from '../data/techniques';
+import { localizeTechnique } from '../i18n';
 
 export { TECHNIQUES };
 
@@ -32,50 +33,61 @@ export default function Dashboard({
   selectedTechniqueId,
   setSelectedTechniqueId,
   onStartSession,
-  settings
+  settings,
+  language = 'ko'
 }) {
-  const currentTechnique = TECHNIQUES.find((tech) => tech.id === selectedTechniqueId) || TECHNIQUES[0];
+  const isEnglish = language === 'en';
+  const [showAllTechniques, setShowAllTechniques] = useState(false);
+  const localizedTechniques = TECHNIQUES.map((technique) => localizeTechnique(technique, language));
+  const currentTechnique = localizedTechniques.find((tech) => tech.id === selectedTechniqueId) || localizedTechniques[0];
   const targetSeconds = 1200;
   const progressPercent = Math.min((todayProgressSeconds / targetSeconds) * 100, 100);
   const minutesToday = Math.floor(todayProgressSeconds / 60);
   const CurrentIcon = ICON_BY_TECHNIQUE[currentTechnique.id] || Wind;
+  const visibleTechniques = showAllTechniques
+    ? localizedTechniques
+    : [currentTechnique];
+  const durationLabel = (technique) => {
+    if (!isEnglish) return getDurationLabel(technique, settings);
+    return `${technique.phases.map((phase) => phase.seconds).join(' - ')} sec`;
+  };
 
   return (
     <div className="home-dashboard mx-auto w-full max-w-[480px] px-5 py-5 animate-fade-in">
       <section className="home-focus-zone flex flex-col items-center justify-center">
         <div className="relative flex h-72 w-72 items-center justify-center">
-          <div className="absolute inset-0 rounded-full border border-teal-300/15 dark:border-teal-300/20" />
-          <div className="absolute inset-7 rounded-full border border-teal-300/20 dark:border-teal-300/25 animate-pulse-slow" />
+          <div className="home-wave-ring-outer absolute inset-0 rounded-full border border-teal-300/15" />
+          <div className="home-wave-ring-inner absolute inset-7 rounded-full border border-teal-300/20" />
           <div className="absolute inset-14 rounded-full bg-teal-300/10 dark:bg-teal-300/10 backdrop-blur-sm" />
           <button
             onClick={onStartSession}
             className="group relative flex h-40 w-40 flex-col items-center justify-center rounded-full border border-white/15 bg-[#24C9B5] text-white shadow-[0_0_48px_rgba(36,201,181,0.18)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_64px_rgba(36,201,181,0.25)] active:scale-95 dark:bg-gradient-to-tr dark:from-teal-500 dark:to-teal-300"
-            aria-label={`${currentTechnique.name} 호흡 시작`}
+            aria-label={`${currentTechnique.name} ${isEnglish ? 'start breathing' : '호흡 시작'}`}
           >
             <CurrentIcon className="mb-2 h-9 w-9 text-white drop-shadow-sm transition-transform duration-300 group-hover:rotate-6" />
-            <span className="text-base font-semibold drop-shadow-sm">호흡 시작</span>
+            <span className="text-base font-semibold drop-shadow-sm">{isEnglish ? 'Start breathing' : '호흡 시작'}</span>
             <span className="mt-1 text-[11px] font-medium text-white/85">
-              {getDurationLabel(currentTechnique, settings)}
+              {durationLabel(currentTechnique)}
             </span>
           </button>
         </div>
       </section>
 
       <section className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-lg border border-[#DCE8EC] bg-white p-4 text-[#172F47] shadow-sm dark:border-[#334A5F] dark:bg-slate-800/50 dark:text-slate-100">
+        <div className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] p-4 text-[var(--text-title)] shadow-sm dark:border-[#334A5F] dark:bg-slate-800/50 dark:text-slate-100">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-xs font-medium text-[#172F47] dark:text-[#F2F7FA]">연속 호흡 기록</h3>
+            <h3 className="text-xs font-medium text-[#172F47] dark:text-[#F2F7FA]">{isEnglish ? 'Breathing streak' : '연속 호흡 기록'}</h3>
             <Flame className={`h-5 w-5 ${streakDays > 0 ? 'fill-amber-400 text-amber-400' : 'text-[#647D90] dark:text-slate-500'}`} />
           </div>
           <div className="flex items-end gap-1">
             <span className="text-4xl font-bold text-[#24C9B5] dark:text-teal-300">{streakDays}</span>
-            <span className="pb-1 text-xs font-medium text-[#506A7D] dark:font-semibold dark:text-[#C4D1DB]">일 연속</span>
+            <span className="pb-1 text-xs font-medium text-[#506A7D] dark:font-semibold dark:text-[#C4D1DB]">{isEnglish ? 'day streak' : '일 연속'}</span>
           </div>
         </div>
 
-        <div className="rounded-lg border border-[#DCE8EC] bg-white p-4 text-[#172F47] shadow-sm dark:border-[#334A5F] dark:bg-slate-800/50 dark:text-slate-100">
+        <div className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] p-4 text-[var(--text-title)] shadow-sm dark:border-[#334A5F] dark:bg-slate-800/50 dark:text-slate-100">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-xs font-medium text-[#172F47] dark:text-[#F2F7FA]">오늘 진행률</h3>
+            <h3 className="text-xs font-medium text-[#172F47] dark:text-[#F2F7FA]">{isEnglish ? "Today's progress" : '오늘 진행률'}</h3>
             <span className="text-xs font-bold text-[#24C9B5] dark:text-teal-300">{Math.round(progressPercent)}%</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-[#DFE9EE] dark:bg-slate-700/70">
@@ -85,10 +97,10 @@ export default function Dashboard({
             />
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] font-medium text-[#506A7D] dark:font-semibold dark:text-[#C4D1DB]">
-            <span>{minutesToday} / 20분</span>
+            <span>{minutesToday} / {isEnglish ? '20 min' : '20분'}</span>
             <span className="inline-flex items-center gap-1">
               <Trophy className="h-3.5 w-3.5 text-amber-300" />
-              목표
+              {isEnglish ? 'Goal' : '목표'}
             </span>
           </div>
         </div>
@@ -98,19 +110,25 @@ export default function Dashboard({
         <div className="mb-4 flex items-center justify-between px-1">
           <div>
             <h2 className="text-xs font-bold uppercase text-[#527189] dark:text-[#9FB5C5]">Breathing exercises</h2>
-            <p className="mt-1 text-sm font-medium text-[#506A7D] dark:font-medium dark:text-[#C4D1DB]">오늘의 리듬을 선택하세요.</p>
+            <p className="mt-1 text-sm font-medium text-[#506A7D] dark:font-medium dark:text-[#C4D1DB]">{isEnglish ? "Choose today's rhythm." : '오늘의 리듬을 선택하세요.'}</p>
           </div>
-          <span className="hidden items-center gap-1 text-xs font-bold text-teal-500 dark:text-teal-300 sm:inline-flex">
-            전체 보기
-            <ArrowRight className="h-3.5 w-3.5" />
-          </span>
+          <button
+            type="button"
+            onClick={() => setShowAllTechniques((current) => !current)}
+            className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-bold text-teal-600 transition-colors hover:text-teal-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/40 dark:text-teal-300 dark:hover:text-teal-200"
+            aria-expanded={showAllTechniques}
+            aria-controls="breathing-technique-list"
+          >
+            {showAllTechniques ? (isEnglish ? 'Collapse' : '접기') : (isEnglish ? 'View all' : '전체 보기')}
+            <ArrowRight className={`h-3.5 w-3.5 transition-transform ${showAllTechniques ? '-rotate-90' : ''}`} />
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-3">
-          {TECHNIQUES.map((tech) => {
+        <div id="breathing-technique-list" className="grid grid-cols-1 gap-3">
+          {visibleTechniques.map((tech) => {
             const isSelected = selectedTechniqueId === tech.id;
             const TechniqueIcon = ICON_BY_TECHNIQUE[tech.id] || Wind;
-            const tags = TAGS_BY_TECHNIQUE[tech.id] || ['호흡'];
+            const tags = isEnglish ? tech.tags : (TAGS_BY_TECHNIQUE[tech.id] || ['호흡']);
 
             return (
               <button
@@ -119,7 +137,7 @@ export default function Dashboard({
                 className={`group relative overflow-hidden rounded-lg border p-5 text-left transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 ${
                   isSelected
                     ? 'border-[#35CDBB] bg-[#EAF9F7] shadow-[0_0_24px_rgba(36,201,181,0.12)] dark:border-teal-300/70 dark:bg-teal-300/10 dark:shadow-[0_0_24px_rgba(45,212,191,0.12)]'
-                    : 'border-[#DCE8EC] bg-white hover:border-[#35CDBB] hover:bg-[#F7FCFC] dark:border-[#334A5F] dark:bg-slate-800/45 dark:hover:border-teal-300/45 dark:hover:bg-slate-800/70'
+                    : 'border-[var(--surface-border)] bg-[var(--surface-card)] hover:border-[#35CDBB] hover:bg-[#F7FCFC] dark:border-[#334A5F] dark:bg-slate-800/45 dark:hover:border-teal-300/45 dark:hover:bg-slate-800/70'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -144,7 +162,7 @@ export default function Dashboard({
                     </span>
                   ))}
                   <span className={`ml-auto text-[11px] font-semibold ${isSelected ? 'text-[#4F7479] dark:text-[#A8BAC7]' : 'text-[#647D90] dark:text-[#A8BAC7]'}`}>
-                    {getDurationLabel(tech, settings)}
+                    {durationLabel(tech)}
                   </span>
                 </div>
               </button>

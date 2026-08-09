@@ -19,7 +19,7 @@ export function speakText(text, enabled = true, rate = 0.92, volume = 0.9) {
 
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'ko-KR';
+  utterance.lang = /[가-힣]/.test(text) ? 'ko-KR' : 'en-US';
   utterance.rate = rate;
   utterance.pitch = 0.95;
   utterance.volume = volume;

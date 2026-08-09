@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --app-bg: #F2F8FA;
+  --surface-card: #FFFFFF;
+  --surface-border: #DCE8EC;
+  --text-title: #172F47;
+  --text-body: #506A7D;
+  --text-muted: #7890A3;
+  --accent: #24C9B5;
+  --accent-strong: #0E9F90;
+  --card-shadow: 0 4px 14px rgba(30, 70, 90, 0.08);
+}
+
 @font-face {
   font-family: 'Pretendard';
   src: url('/fonts/Pretendard-Regular.woff') format('woff');
@@ -46,6 +58,20 @@
 
 .brand-logo {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Inter, 'Pretendard', sans-serif;
+}
+
+.mode-toggle-moon {
+  color: #5FD6CC;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 5px rgba(45, 210, 195, 0.28));
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+button:hover .mode-toggle-moon,
+button:focus-visible .mode-toggle-moon,
+button:active .mode-toggle-moon {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(45, 210, 195, 0.4));
 }
 
 /* Glassmorphism custom classes */
@@ -106,6 +132,105 @@
 
 .scroll-top-breath:hover {
   animation-play-state: paused;
+}
+
+.dark .home-wave-ring-inner,
+.dark .home-wave-ring-outer,
+.breathing-wave-ring {
+  border-style: solid;
+  border-width: 0.75px;
+}
+
+.dark .home-wave-ring-inner,
+.breathing-wave-ring-inner {
+  border-color: rgba(45, 210, 195, 0.30);
+}
+
+.dark .home-wave-ring-outer,
+.breathing-wave-ring-outer {
+  border-color: rgba(45, 210, 195, 0.16);
+}
+
+@keyframes breathingWaveSpread {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0.25;
+  }
+}
+
+.breathing-wave-ring {
+  animation: breathingWaveSpread 5.5s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+.breathing-wave-ring-outer {
+  animation-delay: -2.2s;
+}
+
+.breathing-wave-ring.is-paused {
+  animation-play-state: paused;
+}
+
+.breathing-wave-ring.is-completing {
+  animation: none;
+  opacity: 0;
+  transform: scale(0.72);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+@keyframes summarySparklesSettle {
+  0% { transform: scale(0.8); }
+  62% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes summaryOrbReveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes summaryTitleRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.summary-completion-orb {
+  animation: summaryOrbReveal 700ms ease-out both;
+}
+
+.summary-sparkles-icon {
+  animation: summarySparklesSettle 900ms ease-out both;
+}
+
+.summary-completion-title {
+  animation: summaryTitleRise 650ms 100ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breathing-wave-ring,
+  .summary-completion-orb,
+  .summary-sparkles-icon,
+  .summary-completion-title {
+    animation: none !important;
+  }
+
+  .breathing-core-motion,
+  .breathing-wave-ring.is-completing {
+    transition-duration: 0ms !important;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {

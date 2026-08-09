@@ -1,4 +1,16 @@
 export const PHASE_THEME = {
+  prepareStart: {
+    colorClass: 'from-teal-100 to-teal-50 dark:from-teal-950/20 dark:to-slate-900',
+    circleColor: 'bg-gradient-to-tr from-teal-500 to-emerald-400 shadow-teal-500/30',
+    glowColor: 'bg-teal-500/20',
+    scale: 1.18
+  },
+  prepare: {
+    colorClass: 'from-teal-100 to-teal-50 dark:from-teal-950/20 dark:to-slate-900',
+    circleColor: 'bg-gradient-to-tr from-teal-500 to-emerald-400 shadow-teal-500/30',
+    glowColor: 'bg-teal-500/20',
+    scale: 0.85
+  },
   inhale: {
     colorClass: 'from-teal-100 to-teal-50 dark:from-teal-950/20 dark:to-slate-900',
     circleColor: 'bg-gradient-to-tr from-teal-500 to-emerald-400 shadow-teal-500/30',
@@ -32,7 +44,7 @@ export const TECHNIQUES = [
     description: '4초 들이마시고 2초 멈춘 뒤 6초 길게 내쉬는 기본 안정 호흡입니다.',
     rhythm: '4-2-6',
     introAudio: '/audio/intro/ko-4-2-6-male.wav',
-    outroAudio: '/audio/426_outro.wav',
+    outroAudio: '/audio/outro/ko-female.wav',
     phases: [
       { type: 'inhale', label: '들이마셔', speech: '들이마셔', seconds: 4, instruction: '넷까지 부드럽게 들이마셔요.' },
       { type: 'hold', label: '멈춰', speech: '멈춰', seconds: 2, instruction: '둘까지 가볍게 멈춰요.' },
