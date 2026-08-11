@@ -118,7 +118,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
           </div>
         </div>
 
-        <div className="border-b border-white/10 p-4">
+        <div id="session-duration-settings" className="scroll-mt-24 border-b border-white/10 p-4">
           <div className="flex items-center gap-3.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-300/10 text-teal-300">
               <Timer className="h-5 w-5" />

@@ -5,6 +5,7 @@ import BreathingTimer from './components/BreathingTimer';
 import SessionSummary from './components/SessionSummary';
 import HistorySection from './components/HistorySection';
 import SettingsSection from './components/SettingsSection';
+import BreathingGuide from './components/BreathingGuide';
 import { getTechniqueById, getTechniquePhases } from './data/techniques';
 import { detectDeviceLanguage, localizeCustomPhases, localizeTechnique } from './i18n';
 import { playAirflow, playChime, playGuideAudio, speakText, stopAirflow, stopGuideAudio, stopSpeech } from './utils/audio';
@@ -95,6 +96,7 @@ export default function App() {
   }, []);
 
   const handleUpdateSettings = (nextSettings) => {
+    settingsRef.current = nextSettings;
     setSettings(nextSettings);
     saveSettings(nextSettings);
   };
@@ -363,11 +365,34 @@ export default function App() {
     setActiveTab(tab);
     if (tab === 'starter') {
       setSelectedTechniqueId('4-2-6');
-      setCurrentScreen('dashboard');
+      setCurrentScreen('guide');
     } else {
       setCurrentScreen(tab === 'home' ? 'dashboard' : tab);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleStartBeginnerSession = () => {
+    const nextSettings = {
+      ...settingsRef.current,
+      defaultDurationSeconds: 120,
+      defaultTechniqueId: '4-2-6'
+    };
+    setSelectedTechniqueId('4-2-6');
+    handleUpdateSettings(nextSettings);
+    setCurrentScreen('breathing');
+    void startBreathingLoop();
+  };
+
+  const handleOpenDurationSettings = () => {
+    setActiveTab('settings');
+    setCurrentScreen('settings');
+    window.setTimeout(() => {
+      document.getElementById('session-duration-settings')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 80);
   };
 
   const scrollToTop = () => {
@@ -559,6 +584,13 @@ export default function App() {
             language={settings.language}
           />
         )}
+        {currentScreen === 'guide' && (
+          <BreathingGuide
+            language={settings.language}
+            onStart={handleStartBeginnerSession}
+            onOpenDurationSettings={handleOpenDurationSettings}
+          />
+        )}
         {currentScreen === 'settings' && <SettingsSection settings={settings} onUpdateSettings={handleUpdateSettings} language={settings.language} />}
       </main>
 
@@ -589,10 +621,10 @@ export default function App() {
             <button
               onClick={() => handleTabClick('starter')}
               className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'starter' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#60798C] dark:text-slate-400 hover:text-[#36566D] dark:hover:text-slate-300'}`}
-              aria-label={isEnglish ? 'Start here' : '처음 시작'}
+              aria-label={isEnglish ? 'Breathing guide' : '호흡 안내'}
             >
               <Sprout className="w-5 h-5" />
-              <span className="text-[10px] md:text-xs">{isEnglish ? 'Start here' : '처음 시작'}</span>
+              <span className="text-[10px] md:text-xs">{isEnglish ? 'Guide' : '호흡 안내'}</span>
             </button>
             <button
               onClick={() => handleTabClick('history')}
