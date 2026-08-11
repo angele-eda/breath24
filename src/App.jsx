@@ -7,7 +7,7 @@ import HistorySection from './components/HistorySection';
 import SettingsSection from './components/SettingsSection';
 import { getTechniqueById, getTechniquePhases } from './data/techniques';
 import { detectDeviceLanguage, localizeCustomPhases, localizeTechnique } from './i18n';
-import { playChime, playGuideAudio, speakText, stopGuideAudio, stopSpeech } from './utils/audio';
+import { playAirflow, playChime, playGuideAudio, speakText, stopAirflow, stopGuideAudio, stopSpeech } from './utils/audio';
 import {
   calculateStreakDays,
   calculateTodayProgressSeconds,
@@ -82,6 +82,7 @@ export default function App() {
       if (timerRef.current) clearInterval(timerRef.current);
       if (completionTimeoutRef.current) clearTimeout(completionTimeoutRef.current);
       stopSpeech();
+      stopAirflow(0.05);
       stopGuideAudio();
     };
   }, []);
@@ -96,6 +97,24 @@ export default function App() {
   const handleUpdateSettings = (nextSettings) => {
     setSettings(nextSettings);
     saveSettings(nextSettings);
+  };
+
+  const handleSoundEnabled = (enabled) => {
+    handleUpdateSettings({ ...settingsRef.current, soundCuesEnabled: enabled });
+
+    if (!enabled) {
+      stopAirflow();
+      return;
+    }
+
+    if (
+      currentScreen === 'breathing'
+      && !pausedRef.current
+      && !isCompleting
+      && ['inhale', 'exhale'].includes(currentPhase)
+    ) {
+      playAirflow(currentPhase, Math.max(phaseRemainingRef.current, 0.5), true);
+    }
   };
 
   const resizeProfileImage = (file) => new Promise((resolve, reject) => {
@@ -151,6 +170,7 @@ export default function App() {
     setCurrentPhaseMeta(phase);
     setPhaseTimeRemaining(phase.seconds);
     playChime(phase.type, liveSettings.soundCuesEnabled);
+    playAirflow(phase.type, phase.seconds, liveSettings.soundCuesEnabled);
     if (selectedTechniqueId !== '4-2-6') {
       speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate);
     }
@@ -161,6 +181,7 @@ export default function App() {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = null;
     stopSpeech();
+    stopAirflow();
     setIsCompleting(true);
 
     const technique = localizeTechnique(getTechniqueById(selectedTechniqueId), settingsRef.current.language);
@@ -278,6 +299,7 @@ export default function App() {
     pausedRef.current = true;
     setIsPaused(true);
     stopSpeech();
+    stopAirflow();
     stopGuideAudio();
   };
 
@@ -290,6 +312,9 @@ export default function App() {
     }
     const phase = phasesRef.current[phaseIndexRef.current];
     const liveSettings = settingsRef.current;
+    if (phase) {
+      playAirflow(phase.type, phaseRemainingRef.current, liveSettings.soundCuesEnabled);
+    }
     if (phase && selectedTechniqueId !== '4-2-6') {
       speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate);
     }
@@ -300,6 +325,7 @@ export default function App() {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = null;
     stopSpeech();
+    stopAirflow();
     stopGuideAudio();
     setCurrentScreen('summary');
   };
@@ -499,7 +525,7 @@ export default function App() {
             onResume={handleResumeSession}
             onStop={handleStopSessionEarly}
             soundEnabled={settings.soundCuesEnabled}
-            setSoundEnabled={(value) => handleUpdateSettings({ ...settings, soundCuesEnabled: value })}
+            setSoundEnabled={handleSoundEnabled}
             voiceEnabled={settings.voiceCuesEnabled}
             setVoiceEnabled={(value) => handleUpdateSettings({ ...settings, voiceCuesEnabled: value })}
             techniqueName={activeTechnique.name}

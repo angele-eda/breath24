@@ -55,7 +55,7 @@ export default function BreathingTimer({
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-white/20 dark:bg-slate-800/40 backdrop-blur-md border border-white/30 dark:border-slate-700/30 hover:bg-white/30 dark:hover:bg-slate-800/60 active:scale-95 transition-all text-slate-700 dark:text-slate-200"
-            title={soundEnabled ? (isEnglish ? 'Turn chimes off' : '종소리 끄기') : (isEnglish ? 'Turn chimes on' : '종소리 켜기')}
+            title={soundEnabled ? (isEnglish ? 'Turn sounds off' : '호흡 소리 끄기') : (isEnglish ? 'Turn sounds on' : '호흡 소리 켜기')}
           >
             {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>

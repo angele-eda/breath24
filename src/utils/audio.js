@@ -1,6 +1,7 @@
 let audioCtx = null;
 let currentGuideAudio = null;
 let currentGuideResolve = null;
+let currentAirflow = null;
 
 function getAudioContext() {
   if (!audioCtx) {
@@ -64,6 +65,93 @@ export function playChime(type = 'inhale', enabled = true) {
     oscillator.start(now);
     oscillator.stop(now + chime.duration);
   });
+}
+
+function createSoftAirBuffer(ctx) {
+  const durationSeconds = 2;
+  const buffer = ctx.createBuffer(1, ctx.sampleRate * durationSeconds, ctx.sampleRate);
+  const samples = buffer.getChannelData(0);
+  let smoothedNoise = 0;
+
+  for (let index = 0; index < samples.length; index += 1) {
+    const whiteNoise = Math.random() * 2 - 1;
+    smoothedNoise = smoothedNoise * 0.985 + whiteNoise * 0.015;
+    samples[index] = smoothedNoise * 3.2;
+  }
+
+  return buffer;
+}
+
+export function stopAirflow(fadeSeconds = 0.25) {
+  if (!currentAirflow) return;
+
+  const airflow = currentAirflow;
+  currentAirflow = null;
+  const now = airflow.ctx.currentTime;
+  const fadeDuration = Math.max(0.02, fadeSeconds);
+
+  if (typeof airflow.gain.gain.cancelAndHoldAtTime === 'function') {
+    airflow.gain.gain.cancelAndHoldAtTime(now);
+  } else {
+    airflow.gain.gain.cancelScheduledValues(now);
+    airflow.gain.gain.setValueAtTime(Math.max(airflow.gain.gain.value, 0.0001), now);
+  }
+  airflow.gain.gain.exponentialRampToValueAtTime(0.0001, now + fadeDuration);
+
+  try {
+    airflow.source.stop(now + fadeDuration + 0.03);
+  } catch {
+    // The source may already have stopped at the natural end of a phase.
+  }
+}
+
+export function playAirflow(type, durationSeconds, enabled = true) {
+  stopAirflow(0.25);
+  if (!enabled || !['inhale', 'exhale'].includes(type)) return;
+
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const duration = Math.max(0.5, Number(durationSeconds) || 1);
+  const now = ctx.currentTime;
+  const end = now + duration;
+  const fadeDuration = Math.min(0.25, duration * 0.2);
+  const source = ctx.createBufferSource();
+  const highpass = ctx.createBiquadFilter();
+  const lowpass = ctx.createBiquadFilter();
+  const gain = ctx.createGain();
+
+  source.buffer = createSoftAirBuffer(ctx);
+  source.loop = true;
+  highpass.type = 'highpass';
+  highpass.frequency.setValueAtTime(70, now);
+  highpass.Q.setValueAtTime(0.35, now);
+  lowpass.type = 'lowpass';
+  lowpass.frequency.setValueAtTime(type === 'inhale' ? 720 : 620, now);
+  lowpass.Q.setValueAtTime(0.25, now);
+
+  const peakVolume = type === 'inhale' ? 0.026 : 0.029;
+  gain.gain.setValueAtTime(0.0001, now);
+  if (type === 'inhale') {
+    gain.gain.exponentialRampToValueAtTime(0.0045, now + fadeDuration);
+    gain.gain.exponentialRampToValueAtTime(peakVolume, Math.max(now + fadeDuration, end - fadeDuration));
+  } else {
+    gain.gain.exponentialRampToValueAtTime(peakVolume, now + fadeDuration);
+    gain.gain.exponentialRampToValueAtTime(0.003, Math.max(now + fadeDuration, end - fadeDuration));
+  }
+  gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+  source.connect(highpass);
+  highpass.connect(lowpass);
+  lowpass.connect(gain);
+  gain.connect(ctx.destination);
+  source.start(now);
+  source.stop(end + 0.03);
+
+  currentAirflow = { ctx, source, gain };
+  source.addEventListener('ended', () => {
+    if (currentAirflow?.source === source) currentAirflow = null;
+  }, { once: true });
 }
 
 export function stopGuideAudio() {

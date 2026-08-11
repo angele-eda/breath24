@@ -130,7 +130,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
           </div>
         </div>
 
-        <ToggleRow icon={<Volume2 className="h-5 w-5" />} title={isEnglish ? 'Chime cues' : '종소리 안내'} description={isEnglish ? 'Play a gentle chime when the phase changes.' : '단계가 바뀔 때 부드러운 소리를 재생합니다.'} settingKey="soundCuesEnabled" />
+        <ToggleRow icon={<Volume2 className="h-5 w-5" />} title={isEnglish ? 'Breathing sounds' : '호흡 소리'} description={isEnglish ? 'Play gentle chimes and soft airflow with the breathing rhythm.' : '단계 종소리와 부드러운 공기 흐름음을 재생합니다.'} settingKey="soundCuesEnabled" />
         <ToggleRow icon={<Mic className="h-5 w-5" />} title={isEnglish ? 'Voice guidance' : '음성 안내'} description={isEnglish ? 'Use voice guidance at the start and finish.' : '호흡 시작과 완료를 음성으로 안내합니다.'} settingKey="voiceCuesEnabled" />
         <div className="flex items-center justify-between gap-4 border-b border-white/10 p-4">
           <div className="min-w-0">
