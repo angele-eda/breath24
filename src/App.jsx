@@ -61,6 +61,7 @@ export default function App() {
   const rhythmRef = useRef([]);
   const sessionRunIdRef = useRef(0);
   const completionTimeoutRef = useRef(null);
+  const beginnerSessionRef = useRef(false);
 
   useEffect(() => {
     setStreakDays(calculateStreakDays(sessions));
@@ -216,7 +217,21 @@ export default function App() {
     const baseTechnique = getTechniqueById(selectedTechniqueId);
     const technique = localizeTechnique(baseTechnique, liveSettings.language);
     const basePhases = getTechniquePhases(baseTechnique, liveSettings);
-    const phases = baseTechnique.custom ? localizeCustomPhases(basePhases, liveSettings.language) : technique.phases;
+    let phases = baseTechnique.custom ? localizeCustomPhases(basePhases, liveSettings.language) : technique.phases;
+    if (beginnerSessionRef.current && technique.id === '4-2-6') {
+      phases = [
+        ...phases,
+        {
+          type: 'rest',
+          label: liveSettings.language === 'ko' ? '편하게 쉬기' : 'Rest comfortably',
+          speech: '',
+          seconds: 2,
+          instruction: liveSettings.language === 'ko'
+            ? '숨을 참지 말고 다음 들숨을 편안히 기다려요.'
+            : 'Do not hold your breath; simply wait comfortably for the next inhale.'
+        }
+      ];
+    }
     phasesRef.current = phases;
     pausedRef.current = false;
     elapsedRef.current = 0;
@@ -294,6 +309,7 @@ export default function App() {
   };
 
   const handleStartSession = () => {
+    beginnerSessionRef.current = false;
     const nextSettings = { ...settings, defaultTechniqueId: selectedTechniqueId };
     handleUpdateSettings(nextSettings);
     setCurrentScreen('breathing');
@@ -378,6 +394,7 @@ export default function App() {
       defaultDurationSeconds: 120,
       defaultTechniqueId: '4-2-6'
     };
+    beginnerSessionRef.current = true;
     setSelectedTechniqueId('4-2-6');
     handleUpdateSettings(nextSettings);
     setCurrentScreen('breathing');
@@ -556,7 +573,9 @@ export default function App() {
             setSoundEnabled={handleSoundEnabled}
             voiceEnabled={settings.voiceCuesEnabled}
             setVoiceEnabled={(value) => handleUpdateSettings({ ...settings, voiceCuesEnabled: value })}
-            techniqueName={activeTechnique.name}
+            techniqueName={beginnerSessionRef.current
+              ? (isEnglish ? '4-2-6-2 Beginner Breath' : '4-2-6-2 초보 호흡')
+              : activeTechnique.name}
             language={settings.language}
           />
         )}

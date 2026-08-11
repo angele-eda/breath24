@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Clock3, Pause, Sprout, Volume2, Wind } from 'lucide-react';
+import { ArrowRight, Clock3, Pause, Sparkles, Sprout, Volume2, Wind } from 'lucide-react';
 
 const GUIDE_STEPS = [
   {
@@ -31,6 +31,16 @@ const GUIDE_STEPS = [
     icon: Wind,
     color: 'text-sky-600 dark:text-sky-300',
     surface: 'bg-sky-50 dark:bg-sky-400/10'
+  },
+  {
+    seconds: 2,
+    koTitle: '편하게 쉬기',
+    enTitle: 'Rest comfortably',
+    koDescription: '숨을 참지 말고 다음 들숨을 편안히 기다려요.',
+    enDescription: 'Do not hold; simply wait comfortably for the next inhale.',
+    icon: Sparkles,
+    color: 'text-indigo-600 dark:text-indigo-300',
+    surface: 'bg-indigo-50 dark:bg-indigo-400/10'
   }
 ];
 
@@ -46,7 +56,7 @@ export default function BreathingGuide({ language = 'ko', onStart, onOpenDuratio
         </div>
 
         <h1 className="mt-4 break-keep text-2xl font-bold leading-tight text-[#172F47] dark:text-white">
-          {isEnglish ? 'Start comfortably with 4 · 2 · 6' : '처음이라면 4 · 2 · 6으로 편안하게 시작해요'}
+          {isEnglish ? 'Start comfortably with 4 · 2 · 6 · 2' : '처음이라면 4 · 2 · 6 · 2로 편안하게 시작해요'}
         </h1>
         <p className="mt-2 break-keep text-sm font-medium leading-6 text-[#506A7D] dark:text-slate-300">
           {isEnglish
@@ -58,7 +68,7 @@ export default function BreathingGuide({ language = 'ko', onStart, onOpenDuratio
           {GUIDE_STEPS.map((step) => {
             const Icon = step.icon;
             return (
-              <div key={step.seconds} className="flex items-center gap-3 rounded-2xl border border-[#DCE8EC] bg-[#F7FBFC] p-3.5 dark:border-white/10 dark:bg-slate-950/30">
+              <div key={step.koTitle} className="flex items-center gap-3 rounded-2xl border border-[#DCE8EC] bg-[#F7FBFC] p-3.5 dark:border-white/10 dark:bg-slate-950/30">
                 <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${step.surface} ${step.color}`}>
                   <Icon className="h-5 w-5" />
                 </div>
