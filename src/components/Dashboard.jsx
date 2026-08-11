@@ -51,6 +51,7 @@ export default function Dashboard({
     if (!isEnglish) return getDurationLabel(technique, settings);
     return `${technique.phases.map((phase) => phase.seconds).join(' - ')} sec`;
   };
+  const startCircleRhythm = currentTechnique.rhythm?.replaceAll('-', ' · ');
 
   return (
     <div className="home-dashboard mx-auto w-full max-w-[480px] px-5 py-5 animate-fade-in">
@@ -67,7 +68,7 @@ export default function Dashboard({
             <CurrentIcon className="mb-2 h-9 w-9 text-white drop-shadow-sm transition-transform duration-300 group-hover:rotate-6" />
             <span className="text-base font-semibold drop-shadow-sm">{isEnglish ? 'Start breathing' : '호흡 시작'}</span>
             <span className="mt-1 text-[11px] font-medium text-white/85">
-              {durationLabel(currentTechnique)}
+              {startCircleRhythm}
             </span>
           </button>
         </div>
