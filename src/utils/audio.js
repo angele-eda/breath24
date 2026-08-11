@@ -130,7 +130,7 @@ export function playAirflow(type, durationSeconds, enabled = true) {
   lowpass.frequency.setValueAtTime(type === 'inhale' ? 720 : 620, now);
   lowpass.Q.setValueAtTime(0.25, now);
 
-  const peakVolume = type === 'inhale' ? 0.026 : 0.029;
+  const peakVolume = type === 'inhale' ? 0.044 : 0.049;
   gain.gain.setValueAtTime(0.0001, now);
   if (type === 'inhale') {
     gain.gain.exponentialRampToValueAtTime(0.0045, now + fadeDuration);
