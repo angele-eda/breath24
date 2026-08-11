@@ -32,6 +32,12 @@ export default function BreathingTimer({
   const duration = Math.max(0.5, currentPhaseMeta?.seconds || 1);
   const overallProgress = Math.min((elapsedTimeSeconds / totalDurationSeconds) * 100, 100);
   const isPreparing = currentPhase === 'prepareStart' || currentPhase === 'prepare';
+  const phaseForwardCount = currentPhaseMeta?.seconds
+    ? Math.min(
+        currentPhaseMeta.seconds,
+        Math.max(1, currentPhaseMeta.seconds - phaseTimeRemaining + 1)
+      )
+    : 1;
 
   return (
     <div className={`fixed inset-0 z-50 grid grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden p-4 md:p-6 transition-all duration-1000 ease-in-out bg-gradient-to-b ${theme.colorClass}`}>
@@ -86,7 +92,7 @@ export default function BreathingTimer({
             }}
           >
             <span className={`${isPreparing ? 'text-2xl tracking-tight' : 'text-6xl tracking-tighter tabular-nums'} font-bold drop-shadow-sm`}>
-              {isPreparing ? (isEnglish ? 'Ready' : '준비') : phaseTimeRemaining}
+              {isPreparing ? (isEnglish ? 'Ready' : '준비') : phaseForwardCount}
             </span>
           </div>
         </div>
