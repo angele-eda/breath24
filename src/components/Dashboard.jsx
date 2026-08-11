@@ -146,7 +146,7 @@ export default function Dashboard({
                     <h3 className={`text-lg font-bold ${isSelected ? 'text-[#0E9F90] dark:text-teal-300' : 'text-[#172F47] dark:text-[#F2F7FA]'}`}>
                       {tech.name}
                     </h3>
-                    <p className={`mt-2 line-clamp-2 text-sm font-medium leading-6 ${isSelected ? 'text-[#496D72] dark:text-[#C4D1DB]' : 'text-[#506A7D] dark:text-[#C4D1DB]'}`}>
+                    <p className={`mt-2 line-clamp-2 break-keep text-sm font-medium leading-6 ${isSelected ? 'text-[#496D72] dark:text-[#C4D1DB]' : 'text-[#506A7D] dark:text-[#C4D1DB]'}`}>
                       {tech.description}
                     </p>
                   </div>

@@ -236,11 +236,13 @@ button:active .mode-toggle-moon {
 @media (max-width: 480px) {
   .mobile-type-tuned .text-\[10px\] {
     font-size: 0.6875rem;
+    font-weight: 600;
     line-height: 0.95rem;
   }
 
   .mobile-type-tuned .text-\[11px\] {
     font-size: 0.75rem;
+    font-weight: 600;
     line-height: 1rem;
   }
 }

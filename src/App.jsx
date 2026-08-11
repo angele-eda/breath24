@@ -552,14 +552,14 @@ export default function App() {
           <div className="mx-auto flex max-w-[480px] items-center justify-around">
             <button
               onClick={() => handleTabClick('home')}
-              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'home' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#71889A] dark:text-slate-500 hover:text-[#506A7D]'}`}
+              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'home' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#60798C] dark:text-slate-400 hover:text-[#36566D] dark:hover:text-slate-300'}`}
             >
               <Compass className="w-5 h-5" />
               <span className="text-[10px] md:text-xs">{isEnglish ? 'Home' : '홈'}</span>
             </button>
             <button
               onClick={() => handleTabClick('starter')}
-              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'starter' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#71889A] dark:text-slate-500 hover:text-[#506A7D]'}`}
+              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'starter' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#60798C] dark:text-slate-400 hover:text-[#36566D] dark:hover:text-slate-300'}`}
               aria-label={isEnglish ? 'Start here' : '처음 시작'}
             >
               <Sprout className="w-5 h-5" />
@@ -567,14 +567,14 @@ export default function App() {
             </button>
             <button
               onClick={() => handleTabClick('history')}
-              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'history' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#71889A] dark:text-slate-500 hover:text-[#506A7D]'}`}
+              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'history' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#60798C] dark:text-slate-400 hover:text-[#36566D] dark:hover:text-slate-300'}`}
             >
               <BarChart2 className="w-5 h-5" />
               <span className="text-[10px] md:text-xs">{isEnglish ? 'History' : '기록'}</span>
             </button>
             <button
               onClick={() => handleTabClick('settings')}
-              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'settings' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#71889A] dark:text-slate-500 hover:text-[#506A7D]'}`}
+              className={`flex flex-col items-center space-y-0.5 cursor-pointer flex-1 rounded-lg py-1 transition-all outline-none focus-visible:ring-2 focus-visible:ring-teal-300/45 ${activeTab === 'settings' ? 'text-[#0E9F90] dark:text-teal-400 font-semibold scale-105' : 'text-[#60798C] dark:text-slate-400 hover:text-[#36566D] dark:hover:text-slate-300'}`}
             >
               <SettingsIcon className="w-5 h-5" />
               <span className="text-[10px] md:text-xs">{isEnglish ? 'Settings' : '설정'}</span>
