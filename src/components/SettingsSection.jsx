@@ -13,8 +13,23 @@ const DURATION_OPTIONS = [
 
 export default function SettingsSection({ settings, onUpdateSettings, language = 'ko' }) {
   const isEnglish = language === 'en';
-  const toggleSetting = (key) => onUpdateSettings({ ...settings, [key]: !settings[key] });
+  const toggleSetting = (key) => {
+    const enabled = !settings[key];
+    const nextSettings = { ...settings, [key]: enabled };
+    if (key === 'soundCuesEnabled' && enabled && settings.soundVolume <= 0) {
+      nextSettings.soundVolume = 65;
+    }
+    onUpdateSettings(nextSettings);
+  };
   const setDuration = (seconds) => onUpdateSettings({ ...settings, defaultDurationSeconds: seconds });
+  const setSoundVolume = (value) => {
+    const soundVolume = Math.max(0, Math.min(100, Number(value)));
+    onUpdateSettings({
+      ...settings,
+      soundVolume,
+      soundCuesEnabled: soundVolume > 0
+    });
+  };
 
   const adjustCustomPart = (key, delta, min, max) => {
     const value = Math.max(min, Math.min(max, (settings[key] || 0) + delta));
@@ -131,6 +146,29 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         </div>
 
         <ToggleRow icon={<Volume2 className="h-5 w-5" />} title={isEnglish ? 'Breathing sounds' : '호흡 소리'} description={isEnglish ? 'Play gentle chimes and soft airflow with the breathing rhythm.' : '단계 종소리와 부드러운 공기 흐름음을 재생합니다.'} settingKey="soundCuesEnabled" />
+        <div className="border-b border-white/10 px-4 pb-4 pt-3">
+          <div className="mb-2.5 flex items-center justify-between text-xs font-semibold">
+            <label htmlFor="breathing-sound-volume" className="text-slate-400">
+              {isEnglish ? 'Sound volume' : '소리 크기'}
+            </label>
+            <span className="tabular-nums text-teal-300">{settings.soundVolume ?? 65}%</span>
+          </div>
+          <input
+            id="breathing-sound-volume"
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            value={settings.soundVolume ?? 65}
+            onChange={(event) => setSoundVolume(event.target.value)}
+            className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-700 accent-teal-300"
+            aria-label={isEnglish ? 'Breathing sound volume' : '호흡 소리 크기'}
+          />
+          <div className="mt-1.5 flex justify-between text-[10px] font-semibold text-slate-500">
+            <span>{isEnglish ? 'Quiet' : '작게'}</span>
+            <span>{isEnglish ? 'Loud' : '크게'}</span>
+          </div>
+        </div>
         <ToggleRow icon={<Mic className="h-5 w-5" />} title={isEnglish ? 'Voice guidance' : '음성 안내'} description={isEnglish ? 'Use voice guidance at the start and finish.' : '호흡 시작과 완료를 음성으로 안내합니다.'} settingKey="voiceCuesEnabled" />
         <div className="flex items-center justify-between gap-4 border-b border-white/10 p-4">
           <div className="min-w-0">

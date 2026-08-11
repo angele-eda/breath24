@@ -4,6 +4,7 @@ const SETTINGS_KEY = 'breathe_settings_v1';
 const DEFAULT_SETTINGS = {
   defaultDurationSeconds: 300,
   soundCuesEnabled: true,
+  soundVolume: 65,
   voiceCuesEnabled: true,
   voiceCuesDefaultedOff: true,
   introVoiceEnabledByDefaultV1: true,
@@ -37,6 +38,7 @@ export function getSavedSettings() {
       if (!['female', 'male'].includes(parsed.voiceGender)) {
         migrated.voiceGender = 'female';
       }
+      migrated.soundVolume = Math.max(0, Math.min(100, Number(migrated.soundVolume) || 0));
       return migrated;
     }
   } catch (error) {

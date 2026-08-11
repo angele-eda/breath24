@@ -100,7 +100,10 @@ export default function App() {
   };
 
   const handleSoundEnabled = (enabled) => {
-    handleUpdateSettings({ ...settingsRef.current, soundCuesEnabled: enabled });
+    const soundVolume = enabled && settingsRef.current.soundVolume <= 0
+      ? 65
+      : settingsRef.current.soundVolume;
+    handleUpdateSettings({ ...settingsRef.current, soundCuesEnabled: enabled, soundVolume });
 
     if (!enabled) {
       stopAirflow();
@@ -113,7 +116,7 @@ export default function App() {
       && !isCompleting
       && ['inhale', 'exhale'].includes(currentPhase)
     ) {
-      playAirflow(currentPhase, Math.max(phaseRemainingRef.current, 0.5), true);
+      playAirflow(currentPhase, Math.max(phaseRemainingRef.current, 0.5), true, soundVolume);
     }
   };
 
@@ -169,8 +172,8 @@ export default function App() {
     setCurrentPhase(phase.type);
     setCurrentPhaseMeta(phase);
     setPhaseTimeRemaining(phase.seconds);
-    playChime(phase.type, liveSettings.soundCuesEnabled);
-    playAirflow(phase.type, phase.seconds, liveSettings.soundCuesEnabled);
+    playChime(phase.type, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
+    playAirflow(phase.type, phase.seconds, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     if (selectedTechniqueId !== '4-2-6') {
       speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate);
     }
@@ -186,7 +189,7 @@ export default function App() {
 
     const technique = localizeTechnique(getTechniqueById(selectedTechniqueId), settingsRef.current.language);
     const liveSettings = settingsRef.current;
-    playChime('complete', liveSettings.soundCuesEnabled);
+    playChime('complete', liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     if (technique.id === '4-2-6') {
       playGuideAudio(`/audio/outro/${liveSettings.language === 'ko' ? 'ko' : 'en'}-female.wav`, liveSettings.voiceCuesEnabled);
     } else if (technique.outroAudio) {
@@ -313,7 +316,7 @@ export default function App() {
     const phase = phasesRef.current[phaseIndexRef.current];
     const liveSettings = settingsRef.current;
     if (phase) {
-      playAirflow(phase.type, phaseRemainingRef.current, liveSettings.soundCuesEnabled);
+      playAirflow(phase.type, phaseRemainingRef.current, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     }
     if (phase && selectedTechniqueId !== '4-2-6') {
       speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate);

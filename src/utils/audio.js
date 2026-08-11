@@ -33,7 +33,11 @@ export function stopSpeech() {
   }
 }
 
-export function playChime(type = 'inhale', enabled = true) {
+function getSoundVolumeScale(volumePercent = 65) {
+  return Math.max(0, Math.min(100, Number(volumePercent) || 0)) / 65;
+}
+
+export function playChime(type = 'inhale', enabled = true, volumePercent = 65) {
   if (!enabled) return;
 
   const ctx = getAudioContext();
@@ -48,11 +52,13 @@ export function playChime(type = 'inhale', enabled = true) {
     complete: { frequency: 783.99, volume: 0.1, duration: 1.25 }
   };
   const chime = chimeMap[type] || chimeMap.hold;
+  const volumeScale = getSoundVolumeScale(volumePercent);
+  if (volumeScale <= 0) return;
 
   [1, 2.01, 3.98].forEach((harmonic, index) => {
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
-    const partialVolume = chime.volume / (index + 1.4);
+    const partialVolume = (chime.volume * volumeScale) / (index + 1.4);
 
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(chime.frequency * harmonic, now);
@@ -105,7 +111,7 @@ export function stopAirflow(fadeSeconds = 0.25) {
   }
 }
 
-export function playAirflow(type, durationSeconds, enabled = true) {
+export function playAirflow(type, durationSeconds, enabled = true, volumePercent = 65) {
   stopAirflow(0.25);
   if (!enabled || !['inhale', 'exhale'].includes(type)) return;
 
@@ -130,7 +136,9 @@ export function playAirflow(type, durationSeconds, enabled = true) {
   lowpass.frequency.setValueAtTime(type === 'inhale' ? 720 : 620, now);
   lowpass.Q.setValueAtTime(0.25, now);
 
-  const peakVolume = type === 'inhale' ? 0.044 : 0.049;
+  const volumeScale = getSoundVolumeScale(volumePercent);
+  if (volumeScale <= 0) return;
+  const peakVolume = (type === 'inhale' ? 0.044 : 0.049) * volumeScale;
   gain.gain.setValueAtTime(0.0001, now);
   if (type === 'inhale') {
     gain.gain.exponentialRampToValueAtTime(0.0045, now + fadeDuration);
