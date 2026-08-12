@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 
+const CONTACT_EMAIL = 'help.breathe24@gmail.com';
+
 const DOCUMENTS = {
   terms: {
     ko: {
@@ -14,7 +16,7 @@ const DOCUMENTS = {
         ['5. 면책사항', '이용자는 자신의 건강 상태와 환경을 고려해 안전하게 이용해야 합니다. 관련 법령이 허용하는 범위에서, 이용자의 건강 판단, 부적절한 사용, 기기·네트워크 환경 또는 통제할 수 없는 사유로 발생한 손해에 대해 책임을 지지 않습니다.'],
         ['6. 서비스 변경 및 중단', '기능 개선, 유지보수, 정책 변경 또는 불가피한 사정으로 서비스의 전부 또는 일부가 변경·중단될 수 있습니다. 중요한 변경은 가능한 범위에서 서비스 안에 안내합니다.'],
         ['7. 약관 변경', '이 약관이 변경되면 시행일과 변경 내용을 이 화면에 표시합니다. 변경 후 서비스를 계속 이용하면 변경된 약관에 동의한 것으로 봅니다.'],
-        ['8. 문의처', '서비스, 결제 또는 약관 관련 문의: 1004dayu@gmail.com']
+        ['8. 문의처', `서비스, 결제 또는 약관 관련 문의: ${CONTACT_EMAIL}`]
       ]
     },
     en: {
@@ -28,7 +30,7 @@ const DOCUMENTS = {
         ['5. Disclaimer', 'Use the service safely in light of your health and surroundings. To the extent permitted by law, we are not liable for loss caused by personal health decisions, misuse, device or network conditions, or events outside our reasonable control.'],
         ['6. Changes and availability', 'The service may be changed or suspended for improvements, maintenance, policy changes, or unavoidable circumstances. Material changes will be announced in the service where reasonably possible.'],
         ['7. Changes to these terms', 'If these terms change, the effective date and updated text will be shown here. Continued use after a change means acceptance of the updated terms.'],
-        ['8. Contact', 'Questions about the service, billing, or these terms: 1004dayu@gmail.com']
+        ['8. Contact', `Questions about the service, billing, or these terms: ${CONTACT_EMAIL}`]
       ]
     }
   },
@@ -45,7 +47,7 @@ const DOCUMENTS = {
         ['6. 이용자의 권리', '이용자는 기록 화면에서 호흡 기록을 삭제하고 브라우저 또는 설치된 앱의 데이터 삭제 기능으로 로컬 정보를 제거할 수 있습니다. 광고 맞춤설정은 기기 또는 Google 계정의 광고 설정에서 변경할 수 있으며, 개인정보 관련 열람·정정·삭제 문의도 할 수 있습니다.'],
         ['7. 아동의 개인정보', '법정대리인의 동의가 필요한 연령의 아동을 대상으로 개인정보를 의도적으로 수집하지 않습니다. 향후 광고 또는 결제를 제공할 때에는 연령과 지역에 맞는 보호 조치를 적용합니다.'],
         ['8. 안전성 및 방침 변경', '최소한의 정보만 처리하도록 설계하고 있으며, 기능이나 처리 방식이 달라지면 시행 전에 이 방침을 갱신합니다. 공동 기기에서는 기기 잠금 등 기본 보안 설정을 권장합니다.'],
-        ['9. 문의 이메일', '개인정보 및 이용자 권리 관련 문의: 1004dayu@gmail.com']
+        ['9. 문의 이메일', `개인정보 및 이용자 권리 관련 문의: ${CONTACT_EMAIL}`]
       ]
     },
     en: {
@@ -60,7 +62,7 @@ const DOCUMENTS = {
         ['6. Your rights', 'You can delete breathing records in History and remove local information by clearing browser or installed app data. Change ad personalization in device or Google Account ad settings. You may also request access, correction, or deletion by contacting us.'],
         ['7. Children’s privacy', 'We do not intentionally collect personal information from children whose age requires parental consent. Age- and region-appropriate safeguards will be applied before advertising or billing is offered.'],
         ['8. Security and changes', 'The service is designed to minimize information handling. This policy will be updated before material practices change. Device locking is recommended on shared devices.'],
-        ['9. Contact email', 'Privacy and user-rights inquiries: 1004dayu@gmail.com']
+        ['9. Contact email', `Privacy and user-rights inquiries: ${CONTACT_EMAIL}`]
       ]
     }
   }
@@ -69,6 +71,18 @@ const DOCUMENTS = {
 export default function LegalDocument({ type, language = 'ko', onBack }) {
   const document = DOCUMENTS[type]?.[language === 'ko' ? 'ko' : 'en'] || DOCUMENTS.terms.en;
   const isEnglish = language !== 'ko';
+  const renderBody = (body) => {
+    if (!body.includes(CONTACT_EMAIL)) return body;
+    const [prefix] = body.split(CONTACT_EMAIL);
+    return (
+      <>
+        {prefix}
+        <a className="font-semibold text-[#0E9F90] underline-offset-2 hover:underline dark:text-teal-300" href={`mailto:${CONTACT_EMAIL}`}>
+          {CONTACT_EMAIL}
+        </a>
+      </>
+    );
+  };
 
   return (
     <article className="mx-auto w-full max-w-[480px] px-5 pb-10 pt-6 animate-fade-in">
@@ -95,7 +109,7 @@ export default function LegalDocument({ type, language = 'ko', onBack }) {
           {document.sections.map(([heading, body]) => (
             <section key={heading}>
               <h2 className="text-sm font-bold text-[#172F47] dark:text-slate-100">{heading}</h2>
-              <p className="mt-2 break-keep text-sm font-medium leading-6 text-[#506A7D] dark:text-slate-300">{body}</p>
+              <p className="mt-2 break-keep text-sm font-medium leading-6 text-[#506A7D] dark:text-slate-300">{renderBody(body)}</p>
             </section>
           ))}
         </div>
