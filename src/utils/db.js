@@ -13,6 +13,7 @@ const DEFAULT_SETTINGS = {
   vibrationCuesEnabled: true,
   darkMode: true,
   defaultTechniqueId: '4-2-6',
+  beginnerRestSeconds: 2,
   voiceRate: 0.92,
   profileName: '호흡수행자',
   profileImage: '',
@@ -41,6 +42,7 @@ export function getSavedSettings() {
       }
       migrated.soundVolume = Math.max(0, Math.min(100, Number(migrated.soundVolume) || 0));
       migrated.voiceVolume = Math.max(0, Math.min(100, Number(migrated.voiceVolume) || 0));
+      migrated.beginnerRestSeconds = Math.max(0, Math.min(3, Number(migrated.beginnerRestSeconds) || 0));
       return migrated;
     }
   } catch (error) {

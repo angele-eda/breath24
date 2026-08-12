@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight, Clock3, Pause, Sparkles, Sprout, Volume2, Wind } from 'lucide-react';
 
-const GUIDE_STEPS = [
+const BASE_GUIDE_STEPS = [
   {
     seconds: 4,
     koTitle: '천천히 들이마시기',
@@ -31,21 +31,31 @@ const GUIDE_STEPS = [
     icon: Wind,
     color: 'text-sky-600 dark:text-sky-300',
     surface: 'bg-sky-50 dark:bg-sky-400/10'
-  },
-  {
-    seconds: 2,
-    koTitle: '편하게 쉬기',
-    enTitle: 'Rest comfortably',
-    koDescription: '숨을 참지 말고 다음 들숨을 편안히 기다려요.',
-    enDescription: 'Do not hold; simply wait comfortably for the next inhale.',
-    icon: Sparkles,
-    color: 'text-indigo-600 dark:text-indigo-300',
-    surface: 'bg-indigo-50 dark:bg-indigo-400/10'
   }
 ];
 
-export default function BreathingGuide({ language = 'ko', onStart, onOpenDurationSettings }) {
+export default function BreathingGuide({
+  language = 'ko',
+  restSeconds = 2,
+  onRestSecondsChange,
+  onStart,
+  onOpenDurationSettings
+}) {
   const isEnglish = language === 'en';
+  const restStep = restSeconds > 0
+    ? {
+        seconds: restSeconds,
+        koTitle: '편하게 쉬기',
+        enTitle: 'Rest comfortably',
+        koDescription: '숨을 참지 말고 다음 들숨을 편안히 기다려요.',
+        enDescription: 'Do not hold; simply wait comfortably for the next inhale.',
+        icon: Sparkles,
+        color: 'text-indigo-600 dark:text-indigo-300',
+        surface: 'bg-indigo-50 dark:bg-indigo-400/10'
+      }
+    : null;
+  const guideSteps = restStep ? [...BASE_GUIDE_STEPS, restStep] : BASE_GUIDE_STEPS;
+  const rhythmLabel = restSeconds > 0 ? `4 · 2 · 6 · ${restSeconds}` : '4 · 2 · 6';
 
   return (
     <div className="w-full px-5 py-7 animate-fade-in">
@@ -56,7 +66,9 @@ export default function BreathingGuide({ language = 'ko', onStart, onOpenDuratio
         </div>
 
         <h1 className="mt-4 break-keep text-2xl font-bold leading-tight text-[#172F47] dark:text-white">
-          {isEnglish ? 'Start comfortably with 4 · 2 · 6 · 2' : '처음이라면 4 · 2 · 6 · 2로 편안하게 시작해요'}
+          {isEnglish
+            ? `Start comfortably with ${rhythmLabel}`
+            : `처음이라면 ${rhythmLabel}으로 편안하게 시작해요`}
         </h1>
         <p className="mt-2 break-keep text-sm font-medium leading-6 text-[#506A7D] dark:text-slate-300">
           {isEnglish
@@ -65,7 +77,7 @@ export default function BreathingGuide({ language = 'ko', onStart, onOpenDuratio
         </p>
 
         <div className="mt-5 space-y-2.5">
-          {GUIDE_STEPS.map((step) => {
+          {guideSteps.map((step) => {
             const Icon = step.icon;
             return (
               <div key={step.koTitle} className="flex items-center gap-3 rounded-2xl border border-[#DCE8EC] bg-[#F7FBFC] p-3.5 dark:border-white/10 dark:bg-slate-950/30">
@@ -95,6 +107,38 @@ export default function BreathingGuide({ language = 'ko', onStart, onOpenDuratio
               ? 'Gentle chimes mark each phase, while soft airflow helps you follow the rhythm.'
               : '단계마다 은은한 종소리가 나고, 부드러운 공기 소리가 호흡 리듬을 안내해요.'}
           </p>
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-[#DCE8EC] bg-[#F7FBFC] p-3.5 dark:border-white/10 dark:bg-slate-950/30">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold text-[#172F47] dark:text-slate-100">
+                {isEnglish ? 'Rest after exhaling' : '날숨 뒤 편하게 쉬기'}
+              </p>
+              <p className="mt-0.5 text-[10px] font-semibold text-[#7890A3] dark:text-slate-400">
+                {isEnglish ? 'Choose what feels comfortable.' : '편안한 길이로 선택하세요.'}
+              </p>
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-4 gap-1.5 rounded-xl bg-[#EAF1F4] p-1 dark:bg-slate-800">
+            {[0, 1, 2, 3].map((seconds) => (
+              <button
+                key={seconds}
+                type="button"
+                onClick={() => onRestSecondsChange(seconds)}
+                className={`rounded-lg px-1 py-2 text-xs font-bold transition ${
+                  restSeconds === seconds
+                    ? 'bg-white text-[#0E9F90] shadow-sm dark:bg-slate-700 dark:text-teal-300'
+                    : 'text-[#647D90] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+                }`}
+                aria-pressed={restSeconds === seconds}
+              >
+                {seconds === 0
+                  ? (isEnglish ? 'None' : '없음')
+                  : (isEnglish ? `${seconds}s` : `${seconds}초`)}
+              </button>
+            ))}
+          </div>
         </div>
 
         <button

@@ -254,14 +254,15 @@ export default function App() {
     const technique = localizeTechnique(baseTechnique, liveSettings.language);
     const basePhases = getTechniquePhases(baseTechnique, liveSettings);
     let phases = baseTechnique.custom ? localizeCustomPhases(basePhases, liveSettings.language) : technique.phases;
-    if (beginnerSessionRef.current && technique.id === '4-2-6') {
+    const beginnerRestSeconds = Math.max(0, Math.min(3, liveSettings.beginnerRestSeconds ?? 2));
+    if (beginnerSessionRef.current && technique.id === '4-2-6' && beginnerRestSeconds > 0) {
       phases = [
         ...phases,
         {
           type: 'rest',
           label: liveSettings.language === 'ko' ? '편하게 쉬기' : 'Rest comfortably',
           speech: '',
-          seconds: 2,
+          seconds: beginnerRestSeconds,
           instruction: liveSettings.language === 'ko'
             ? '숨을 참지 말고 다음 들숨을 편안히 기다려요.'
             : 'Do not hold your breath; simply wait comfortably for the next inhale.'
@@ -616,7 +617,7 @@ export default function App() {
             voiceGender={settings.voiceGender}
             setVoiceGender={(voiceGender) => handleUpdateSettings({ ...settingsRef.current, voiceGender })}
             techniqueName={beginnerSessionRef.current
-              ? (isEnglish ? '4-2-6-2 Beginner Breath' : '4-2-6-2 초보 호흡')
+              ? `${settings.beginnerRestSeconds > 0 ? `4-2-6-${settings.beginnerRestSeconds}` : '4-2-6'} ${isEnglish ? 'Beginner Breath' : '초보 호흡'}`
               : activeTechnique.name}
             language={settings.language}
           />
@@ -648,6 +649,11 @@ export default function App() {
         {currentScreen === 'guide' && (
           <BreathingGuide
             language={settings.language}
+            restSeconds={settings.beginnerRestSeconds}
+            onRestSecondsChange={(beginnerRestSeconds) => handleUpdateSettings({
+              ...settingsRef.current,
+              beginnerRestSeconds
+            })}
             onStart={handleStartBeginnerSession}
             onOpenDurationSettings={handleOpenDurationSettings}
           />
