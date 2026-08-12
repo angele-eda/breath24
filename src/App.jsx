@@ -8,7 +8,7 @@ import SettingsSection from './components/SettingsSection';
 import BreathingGuide from './components/BreathingGuide';
 import { getTechniqueById, getTechniquePhases } from './data/techniques';
 import { detectDeviceLanguage, localizeCustomPhases, localizeTechnique } from './i18n';
-import { playAirflow, playChime, playGuideAudio, speakText, stopAirflow, stopGuideAudio, stopSpeech } from './utils/audio';
+import { playAirflow, playChime, playGuideAudio, setGuideAudioVolume, speakText, stopAirflow, stopGuideAudio, stopSpeech } from './utils/audio';
 import {
   calculateStreakDays,
   calculateTodayProgressSeconds,
@@ -123,6 +123,42 @@ export default function App() {
     }
   };
 
+  const handleSoundVolume = (soundVolume) => {
+    const normalizedVolume = Math.max(0, Math.min(100, Number(soundVolume) || 0));
+    const soundCuesEnabled = normalizedVolume > 0;
+    handleUpdateSettings({ ...settingsRef.current, soundVolume: normalizedVolume, soundCuesEnabled });
+
+    if (!soundCuesEnabled) {
+      stopAirflow();
+    } else if (
+      currentScreen === 'breathing'
+      && !pausedRef.current
+      && !isCompleting
+      && ['inhale', 'exhale'].includes(currentPhase)
+    ) {
+      playAirflow(currentPhase, Math.max(phaseRemainingRef.current, 0.5), true, normalizedVolume);
+    }
+  };
+
+  const handleVoiceEnabled = (enabled) => {
+    const voiceVolume = enabled && settingsRef.current.voiceVolume <= 0
+      ? 85
+      : settingsRef.current.voiceVolume;
+    handleUpdateSettings({ ...settingsRef.current, voiceCuesEnabled: enabled, voiceVolume });
+    if (!enabled) {
+      stopSpeech();
+      stopGuideAudio();
+    }
+  };
+
+  const handleVoiceVolume = (voiceVolume) => {
+    const normalizedVolume = Math.max(0, Math.min(100, Number(voiceVolume) || 0));
+    const voiceCuesEnabled = normalizedVolume > 0;
+    handleUpdateSettings({ ...settingsRef.current, voiceVolume: normalizedVolume, voiceCuesEnabled });
+    setGuideAudioVolume(normalizedVolume);
+    if (!voiceCuesEnabled) stopSpeech();
+  };
+
   const resizeProfileImage = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -178,7 +214,7 @@ export default function App() {
     playChime(phase.type, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     playAirflow(phase.type, phase.seconds, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     if (selectedTechniqueId !== '4-2-6') {
-      speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate);
+      speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate, liveSettings.voiceVolume / 100);
     }
   };
 
@@ -194,11 +230,11 @@ export default function App() {
     const liveSettings = settingsRef.current;
     playChime('complete', liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     if (technique.id === '4-2-6') {
-      playGuideAudio(`/audio/outro/${liveSettings.language === 'ko' ? 'ko' : 'en'}-female.wav`, liveSettings.voiceCuesEnabled);
+      playGuideAudio(`/audio/outro/${liveSettings.language === 'ko' ? 'ko' : 'en'}-female.wav`, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100);
     } else if (technique.outroAudio) {
-      playGuideAudio(technique.outroAudio, liveSettings.voiceCuesEnabled);
+      playGuideAudio(technique.outroAudio, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100);
     } else {
-      speakText(liveSettings.language === 'ko' ? '호흡 세션이 완료되었습니다.' : 'Breathing session complete.', liveSettings.voiceCuesEnabled, liveSettings.voiceRate);
+      speakText(liveSettings.language === 'ko' ? '호흡 세션이 완료되었습니다.' : 'Breathing session complete.', liveSettings.voiceCuesEnabled, liveSettings.voiceRate, liveSettings.voiceVolume / 100);
     }
     const completionTransitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;
     completionTimeoutRef.current = window.setTimeout(() => {
@@ -269,7 +305,7 @@ export default function App() {
       ? `/audio/intro/${liveSettings.language === 'ko' ? 'ko' : 'en'}-4-2-6-${liveSettings.voiceGender || 'female'}.wav`
       : technique.introAudio;
     const introPromise = introAudio
-      ? playGuideAudio(introAudio, liveSettings.voiceCuesEnabled)
+      ? playGuideAudio(introAudio, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100)
       : Promise.resolve(false);
     const preparationPromise = isPreparing426
       ? new Promise((resolve) => window.setTimeout(resolve, preparationSeconds * 1000))
@@ -337,7 +373,7 @@ export default function App() {
       playAirflow(phase.type, phaseRemainingRef.current, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     }
     if (phase && selectedTechniqueId !== '4-2-6') {
-      speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate);
+      speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate, liveSettings.voiceVolume / 100);
     }
   };
 
@@ -571,8 +607,14 @@ export default function App() {
             onStop={handleStopSessionEarly}
             soundEnabled={settings.soundCuesEnabled}
             setSoundEnabled={handleSoundEnabled}
+            soundVolume={settings.soundVolume}
+            setSoundVolume={handleSoundVolume}
             voiceEnabled={settings.voiceCuesEnabled}
-            setVoiceEnabled={(value) => handleUpdateSettings({ ...settings, voiceCuesEnabled: value })}
+            setVoiceEnabled={handleVoiceEnabled}
+            voiceVolume={settings.voiceVolume}
+            setVoiceVolume={handleVoiceVolume}
+            voiceGender={settings.voiceGender}
+            setVoiceGender={(voiceGender) => handleUpdateSettings({ ...settingsRef.current, voiceGender })}
             techniqueName={beginnerSessionRef.current
               ? (isEnglish ? '4-2-6-2 Beginner Breath' : '4-2-6-2 초보 호흡')
               : activeTechnique.name}

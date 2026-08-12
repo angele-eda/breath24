@@ -171,6 +171,11 @@ export function stopGuideAudio() {
   currentGuideResolve = null;
 }
 
+export function setGuideAudioVolume(volumePercent = 85) {
+  if (!currentGuideAudio) return;
+  currentGuideAudio.volume = Math.max(0, Math.min(1, (Number(volumePercent) || 0) / 100));
+}
+
 export function playGuideAudio(src, enabled = true, volume = 0.85) {
   if (!enabled || !src) return Promise.resolve(false);
 

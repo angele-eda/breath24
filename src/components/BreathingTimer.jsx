@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Info, Mic, MicOff, Pause, Play, Square, Volume2, VolumeX } from 'lucide-react';
 import { PHASE_THEME } from '../data/techniques';
 
@@ -16,12 +16,29 @@ export default function BreathingTimer({
   onStop,
   soundEnabled,
   setSoundEnabled,
+  soundVolume,
+  setSoundVolume,
   voiceEnabled,
   setVoiceEnabled,
+  voiceVolume,
+  setVoiceVolume,
+  voiceGender,
+  setVoiceGender,
   techniqueName,
   language = 'ko'
 }) {
   const isEnglish = language === 'en';
+  const [openAudioPanel, setOpenAudioPanel] = useState(null);
+  const audioControlsRef = useRef(null);
+
+  useEffect(() => {
+    if (!openAudioPanel) return undefined;
+    const closeOnOutsidePress = (event) => {
+      if (!audioControlsRef.current?.contains(event.target)) setOpenAudioPanel(null);
+    };
+    document.addEventListener('pointerdown', closeOnOutsidePress);
+    return () => document.removeEventListener('pointerdown', closeOnOutsidePress);
+  }, [openAudioPanel]);
   const formatTime = (totalSec) => {
     const mins = Math.floor(totalSec / 60);
     const secs = totalSec % 60;
@@ -51,21 +68,102 @@ export default function BreathingTimer({
           </h2>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div ref={audioControlsRef} className="relative flex items-center space-x-2">
           <button
-            onClick={() => setSoundEnabled(!soundEnabled)}
+            onClick={() => setOpenAudioPanel((panel) => panel === 'sound' ? null : 'sound')}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-white/20 dark:bg-slate-800/40 backdrop-blur-md border border-white/30 dark:border-slate-700/30 hover:bg-white/30 dark:hover:bg-slate-800/60 active:scale-95 transition-all text-slate-700 dark:text-slate-200"
             title={soundEnabled ? (isEnglish ? 'Turn sounds off' : '호흡 소리 끄기') : (isEnglish ? 'Turn sounds on' : '호흡 소리 켜기')}
           >
             {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
           <button
-            onClick={() => setVoiceEnabled(!voiceEnabled)}
+            onClick={() => setOpenAudioPanel((panel) => panel === 'voice' ? null : 'voice')}
             className="w-10 h-10 rounded-full flex items-center justify-center bg-white/20 dark:bg-slate-800/40 backdrop-blur-md border border-white/30 dark:border-slate-700/30 hover:bg-white/30 dark:hover:bg-slate-800/60 active:scale-95 transition-all text-slate-700 dark:text-slate-200"
             title={voiceEnabled ? (isEnglish ? 'Turn voice off' : '음성 안내 끄기') : (isEnglish ? 'Turn voice on' : '음성 안내 켜기')}
           >
             {voiceEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
           </button>
+
+          {openAudioPanel && (
+            <div className="absolute right-0 top-12 z-50 w-64 rounded-2xl border border-white/20 bg-white/95 p-4 text-slate-700 shadow-[0_18px_45px_rgba(15,23,42,0.22)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95 dark:text-slate-200">
+              {openAudioPanel === 'sound' ? (
+                <>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-bold">{isEnglish ? 'Breathing sounds' : '호흡 소리'}</p>
+                      <p className="mt-0.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400">{isEnglish ? 'Chimes and airflow' : '종소리와 바람 소리'}</p>
+                    </div>
+                    <button
+                      onClick={() => setSoundEnabled(!soundEnabled)}
+                      className={`h-6 w-11 shrink-0 rounded-full p-0.5 transition-colors ${soundEnabled ? 'bg-teal-400' : 'bg-slate-300 dark:bg-slate-700'}`}
+                      aria-label={isEnglish ? 'Toggle breathing sounds' : '호흡 소리 켜기 또는 끄기'}
+                    >
+                      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${soundEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                    </button>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Volume' : '소리 크기'}</span>
+                    <span className="tabular-nums text-teal-600 dark:text-teal-300">{soundVolume}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={soundVolume}
+                    onInput={(event) => setSoundVolume(event.currentTarget.value)}
+                    className="mt-2 h-1.5 w-full cursor-pointer accent-teal-500"
+                    aria-label={isEnglish ? 'Breathing sound volume' : '호흡 소리 크기'}
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-bold">{isEnglish ? 'Voice guidance' : '음성 안내'}</p>
+                      <p className="mt-0.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400">{isEnglish ? 'Opening and closing voice' : '시작과 완료 안내 음성'}</p>
+                    </div>
+                    <button
+                      onClick={() => setVoiceEnabled(!voiceEnabled)}
+                      className={`h-6 w-11 shrink-0 rounded-full p-0.5 transition-colors ${voiceEnabled ? 'bg-teal-400' : 'bg-slate-300 dark:bg-slate-700'}`}
+                      aria-label={isEnglish ? 'Toggle voice guidance' : '음성 안내 켜기 또는 끄기'}
+                    >
+                      <span className={`block h-5 w-5 rounded-full bg-white shadow transition-transform ${voiceEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                    </button>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+                    {[
+                      { value: 'female', label: isEnglish ? 'Female' : '여성' },
+                      { value: 'male', label: isEnglish ? 'Male' : '남성' }
+                    ].map((voice) => (
+                      <button
+                        key={voice.value}
+                        onClick={() => setVoiceGender(voice.value)}
+                        className={`rounded-lg px-2 py-1.5 text-xs font-bold transition ${voiceGender === voice.value ? 'bg-white text-teal-700 shadow-sm dark:bg-slate-700 dark:text-teal-300' : 'text-slate-500 dark:text-slate-400'}`}
+                        aria-pressed={voiceGender === voice.value}
+                      >
+                        {voice.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-slate-500 dark:text-slate-400">{isEnglish ? 'Voice volume' : '음성 크기'}</span>
+                    <span className="tabular-nums text-teal-600 dark:text-teal-300">{voiceVolume}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={voiceVolume}
+                    onInput={(event) => setVoiceVolume(event.currentTarget.value)}
+                    className="mt-2 h-1.5 w-full cursor-pointer accent-teal-500"
+                    aria-label={isEnglish ? 'Voice guidance volume' : '음성 안내 크기'}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

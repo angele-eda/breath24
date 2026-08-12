@@ -6,6 +6,7 @@ const DEFAULT_SETTINGS = {
   soundCuesEnabled: true,
   soundVolume: 65,
   voiceCuesEnabled: true,
+  voiceVolume: 85,
   voiceCuesDefaultedOff: true,
   introVoiceEnabledByDefaultV1: true,
   voiceGender: 'female',
@@ -39,6 +40,7 @@ export function getSavedSettings() {
         migrated.voiceGender = 'female';
       }
       migrated.soundVolume = Math.max(0, Math.min(100, Number(migrated.soundVolume) || 0));
+      migrated.voiceVolume = Math.max(0, Math.min(100, Number(migrated.voiceVolume) || 0));
       return migrated;
     }
   } catch (error) {
