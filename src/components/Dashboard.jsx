@@ -33,6 +33,7 @@ export default function Dashboard({
   selectedTechniqueId,
   setSelectedTechniqueId,
   onStartSession,
+  onOpenLegal,
   settings,
   language = 'ko'
 }) {
@@ -187,6 +188,16 @@ export default function Dashboard({
           })}
         </div>
       </section>
+
+      <footer className="mt-8 flex items-center justify-center gap-2 pb-2 text-[11px] font-semibold text-[#71889A] dark:text-slate-500">
+        <button type="button" onClick={() => onOpenLegal('terms')} className="rounded px-1 py-1 transition-colors hover:text-[#0E9F90] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/40 dark:hover:text-teal-300">
+          {isEnglish ? 'Terms of Use' : '이용약관'}
+        </button>
+        <span aria-hidden="true" className="text-[#B4C4CD] dark:text-slate-700">·</span>
+        <button type="button" onClick={() => onOpenLegal('privacy')} className="rounded px-1 py-1 transition-colors hover:text-[#0E9F90] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/40 dark:hover:text-teal-300">
+          {isEnglish ? 'Privacy Policy' : '개인정보처리방침'}
+        </button>
+      </footer>
     </div>
   );
 }

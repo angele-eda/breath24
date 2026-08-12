@@ -6,6 +6,7 @@ import SessionSummary from './components/SessionSummary';
 import HistorySection from './components/HistorySection';
 import SettingsSection from './components/SettingsSection';
 import BreathingGuide from './components/BreathingGuide';
+import LegalDocument from './components/LegalDocument';
 import { getTechniqueById, getTechniquePhases } from './data/techniques';
 import { detectDeviceLanguage, localizeCustomPhases, localizeTechnique } from './i18n';
 import { playAirflow, playChime, playGuideAudio, setGuideAudioVolume, speakText, stopAirflow, stopGuideAudio, stopSpeech } from './utils/audio';
@@ -33,6 +34,7 @@ export default function App() {
   const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
   const [draftProfileName, setDraftProfileName] = useState(() => settings.profileName || '호흡수행자');
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [legalDocumentType, setLegalDocumentType] = useState('terms');
 
   const [streakDays, setStreakDays] = useState(0);
   const [todayProgressSeconds, setTodayProgressSeconds] = useState(0);
@@ -449,6 +451,12 @@ export default function App() {
     }, 80);
   };
 
+  const handleOpenLegal = (type) => {
+    setLegalDocumentType(type);
+    setCurrentScreen('legal');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -589,6 +597,7 @@ export default function App() {
             selectedTechniqueId={selectedTechniqueId}
             setSelectedTechniqueId={setSelectedTechniqueId}
             onStartSession={handleStartSession}
+            onOpenLegal={handleOpenLegal}
             settings={settings}
             language={settings.language}
           />
@@ -659,9 +668,16 @@ export default function App() {
           />
         )}
         {currentScreen === 'settings' && <SettingsSection settings={settings} onUpdateSettings={handleUpdateSettings} language={settings.language} />}
+        {currentScreen === 'legal' && (
+          <LegalDocument
+            type={legalDocumentType}
+            language={settings.language}
+            onBack={() => handleTabClick('home')}
+          />
+        )}
       </main>
 
-      {currentScreen !== 'breathing' && currentScreen !== 'summary' && (
+      {currentScreen !== 'breathing' && currentScreen !== 'summary' && currentScreen !== 'legal' && (
         <>
           <button
             onClick={scrollToTop}
