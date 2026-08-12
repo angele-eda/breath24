@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Activity, ArrowRight, Box, Compass, Flame, Moon, Sparkles, Trophy, Waves, Wind } from 'lucide-react';
 import { TECHNIQUES, getDurationLabel } from '../data/techniques';
 import { localizeTechnique } from '../i18n';
@@ -38,6 +38,7 @@ export default function Dashboard({
 }) {
   const isEnglish = language === 'en';
   const [showAllTechniques, setShowAllTechniques] = useState(false);
+  const techniqueListRef = useRef(null);
   const localizedTechniques = TECHNIQUES.map((technique) => localizeTechnique(technique, language));
   const currentTechnique = localizedTechniques.find((tech) => tech.id === selectedTechniqueId) || localizedTechniques[0];
   const targetSeconds = 1200;
@@ -52,6 +53,21 @@ export default function Dashboard({
     return `${technique.phases.map((phase) => phase.seconds).join(' - ')} sec`;
   };
   const startCircleRhythm = currentTechnique.rhythm?.replaceAll('-', ' · ');
+  const handleToggleTechniques = () => {
+    if (showAllTechniques) {
+      setShowAllTechniques(false);
+      return;
+    }
+
+    setShowAllTechniques(true);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const listTop = techniqueListRef.current?.getBoundingClientRect().top ?? 0;
+        const targetTop = window.scrollY + listTop - 150;
+        window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+      });
+    });
+  };
 
   return (
     <div className="home-dashboard mx-auto w-full max-w-[480px] px-5 py-5 animate-fade-in">
@@ -115,7 +131,7 @@ export default function Dashboard({
           </div>
           <button
             type="button"
-            onClick={() => setShowAllTechniques((current) => !current)}
+            onClick={handleToggleTechniques}
             className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-bold text-teal-600 transition-colors hover:text-teal-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/40 dark:text-teal-300 dark:hover:text-teal-200"
             aria-expanded={showAllTechniques}
             aria-controls="breathing-technique-list"
@@ -125,7 +141,7 @@ export default function Dashboard({
           </button>
         </div>
 
-        <div id="breathing-technique-list" className="grid grid-cols-1 gap-3">
+        <div ref={techniqueListRef} id="breathing-technique-list" className="grid grid-cols-1 gap-3">
           {visibleTechniques.map((tech) => {
             const isSelected = selectedTechniqueId === tech.id;
             const TechniqueIcon = ICON_BY_TECHNIQUE[tech.id] || Wind;
