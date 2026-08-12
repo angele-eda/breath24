@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Info, Mic, MicOff, Pause, Play, Square, Volume2, VolumeX } from 'lucide-react';
 import { PHASE_THEME } from '../data/techniques';
+import { playChime } from '../utils/audio';
 
 export default function BreathingTimer({
   currentPhase,
@@ -55,6 +56,10 @@ export default function BreathingTimer({
         Math.max(1, currentPhaseMeta.seconds - phaseTimeRemaining + 1)
       )
     : 1;
+  const previewChimeAtCurrentVolume = (event) => {
+    const previewVolume = Number(event.currentTarget.value ?? soundVolume);
+    if (previewVolume > 0) playChime('inhale', true, previewVolume);
+  };
 
   return (
     <div className={`fixed inset-0 z-50 grid grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden p-4 md:p-6 transition-all duration-1000 ease-in-out bg-gradient-to-b ${theme.colorClass}`}>
@@ -112,6 +117,8 @@ export default function BreathingTimer({
                     step="5"
                     value={soundVolume}
                     onInput={(event) => setSoundVolume(event.currentTarget.value)}
+                    onPointerUp={previewChimeAtCurrentVolume}
+                    onKeyUp={previewChimeAtCurrentVolume}
                     className="mt-2 h-1.5 w-full cursor-pointer accent-teal-500"
                     aria-label={isEnglish ? 'Breathing sound volume' : '호흡 소리 크기'}
                   />
