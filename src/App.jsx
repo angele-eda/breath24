@@ -21,9 +21,14 @@ import {
 } from './utils/db';
 
 const USER_AVATAR_URL = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=60';
+const getLegalDocumentFromUrl = () => {
+  const documentType = new URLSearchParams(window.location.search).get('document');
+  return ['terms', 'privacy'].includes(documentType) ? documentType : null;
+};
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('dashboard');
+  const initialLegalDocument = getLegalDocumentFromUrl();
+  const [currentScreen, setCurrentScreen] = useState(initialLegalDocument ? 'legal' : 'dashboard');
   const [activeTab, setActiveTab] = useState('home');
   const [settings, setSettings] = useState(() => {
     const savedSettings = getSavedSettings();
@@ -34,7 +39,7 @@ export default function App() {
   const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
   const [draftProfileName, setDraftProfileName] = useState(() => settings.profileName || '호흡수행자');
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [legalDocumentType, setLegalDocumentType] = useState('terms');
+  const [legalDocumentType, setLegalDocumentType] = useState(initialLegalDocument || 'terms');
 
   const [streakDays, setStreakDays] = useState(0);
   const [todayProgressSeconds, setTodayProgressSeconds] = useState(0);
@@ -96,6 +101,24 @@ export default function App() {
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleHistoryChange = (event) => {
+      const documentType = getLegalDocumentFromUrl();
+      if (documentType) {
+        setLegalDocumentType(documentType);
+        setCurrentScreen('legal');
+      } else {
+        setCurrentScreen('dashboard');
+        setActiveTab('home');
+      }
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: event.state?.scrollY || 0, behavior: 'auto' });
+      });
+    };
+    window.addEventListener('popstate', handleHistoryChange);
+    return () => window.removeEventListener('popstate', handleHistoryChange);
   }, []);
 
   const handleUpdateSettings = (nextSettings) => {
@@ -452,8 +475,29 @@ export default function App() {
   };
 
   const handleOpenLegal = (type) => {
+    window.history.replaceState(
+      { ...window.history.state, scrollY: window.scrollY },
+      '',
+      window.location.href
+    );
     setLegalDocumentType(type);
     setCurrentScreen('legal');
+    const url = new URL(window.location.href);
+    url.searchParams.set('document', type);
+    window.history.pushState({ breathe24Legal: type }, '', `${url.pathname}${url.search}${url.hash}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCloseLegal = () => {
+    if (window.history.state?.breathe24Legal) {
+      window.history.back();
+      return;
+    }
+    const url = new URL(window.location.href);
+    url.searchParams.delete('document');
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    setCurrentScreen('dashboard');
+    setActiveTab('home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -672,7 +716,7 @@ export default function App() {
           <LegalDocument
             type={legalDocumentType}
             language={settings.language}
-            onBack={() => handleTabClick('home')}
+            onBack={handleCloseLegal}
           />
         )}
       </main>
