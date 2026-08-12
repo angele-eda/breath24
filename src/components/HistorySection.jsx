@@ -122,8 +122,7 @@ export default function HistorySection({
 
       <section className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] p-5 text-[var(--text-title)] shadow-[0_4px_14px_rgba(30,70,90,0.08)] dark:border-white/10 dark:bg-slate-800/50 dark:text-slate-100 dark:shadow-sm">
         <div className="text-center">
-          <span className="block text-[10px] font-bold uppercase tracking-widest text-[#7890A3] dark:text-slate-500">Session Rhythm Wave</span>
-          <h3 className="mt-1 text-sm font-bold text-[#172F47] dark:text-slate-300">{isEnglish ? 'Recent breathing rhythm' : '최근 호흡 리듬 흐름'}</h3>
+          <h3 className="text-sm font-bold text-[#172F47] dark:text-slate-300">{isEnglish ? 'Recent breathing time' : '최근 호흡 시간'}</h3>
         </div>
 
         <div className="mt-5 flex h-28 items-end justify-between gap-2 px-2">
@@ -141,7 +140,7 @@ export default function HistorySection({
           <span>{isEnglish ? 'Past' : '과거'}</span>
           <span className="inline-flex items-center gap-1 text-[#0E9F90] dark:text-teal-300">
             <BarChart2 className="h-3.5 w-3.5" />
-            {isEnglish ? 'Rhythm' : '리듬 흐름'}
+            {isEnglish ? 'Session time' : '세션 시간'}
           </span>
           <span>{isEnglish ? 'Now' : '현재'}</span>
         </div>
