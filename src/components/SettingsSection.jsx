@@ -98,13 +98,13 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
   const GroupHeader = ({ icon, title, description }) => (
     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 marker:content-none">
       <div className="flex min-w-0 items-center gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-300/10 text-teal-300">{icon}</span>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-300/10 text-teal-300 transition-colors group-open:bg-teal-300 group-open:text-slate-950">{icon}</span>
         <span className="min-w-0">
-          <span className="block text-sm font-bold text-slate-100">{title}</span>
+          <span className="block text-sm font-bold text-slate-100 transition-colors group-open:text-teal-200">{title}</span>
           <span className="mt-0.5 block text-[11px] font-medium leading-4 text-slate-500">{description}</span>
         </span>
       </div>
-      <ChevronDown className="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180" />
+      <ChevronDown className="h-4 w-4 shrink-0 text-slate-500 transition-all duration-200 group-open:rotate-180 group-open:text-teal-300" />
     </summary>
   );
 
@@ -119,7 +119,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         <p className="mt-1 text-sm text-slate-500">{isEnglish ? 'Adjust sound, session length, and your custom rhythm.' : '소리, 시간, 맞춤 호흡 리듬을 편하게 조절하세요.'}</p>
       </div>
 
-      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm transition-colors open:border-teal-300/45 open:bg-teal-950/25 open:shadow-[0_0_0_1px_rgba(94,234,212,0.08)] dark:bg-slate-800/50 dark:open:bg-teal-950/25">
         <GroupHeader
           icon={<Globe2 className="h-4 w-4" />}
           title={isEnglish ? 'Basic settings' : '기본 설정'}
@@ -147,7 +147,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         </div>
       </details>
 
-      <details id="session-duration-settings" className="group scroll-mt-24 overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details id="session-duration-settings" className="group scroll-mt-24 overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm transition-colors open:border-teal-300/45 open:bg-teal-950/25 open:shadow-[0_0_0_1px_rgba(94,234,212,0.08)] dark:bg-slate-800/50 dark:open:bg-teal-950/25">
         <GroupHeader
           icon={<Timer className="h-4 w-4" />}
           title={isEnglish ? 'Breathing session' : '호흡 세션'}
@@ -185,7 +185,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         </div>
       </details>
 
-      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm transition-colors open:border-teal-300/45 open:bg-teal-950/25 open:shadow-[0_0_0_1px_rgba(94,234,212,0.08)] dark:bg-slate-800/50 dark:open:bg-teal-950/25">
         <GroupHeader
           icon={<Volume2 className="h-4 w-4" />}
           title={isEnglish ? 'Sound and voice' : '소리 및 음성'}
@@ -253,7 +253,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         </div>
       </details>
 
-      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm transition-colors open:border-teal-300/45 open:bg-teal-950/25 open:shadow-[0_0_0_1px_rgba(94,234,212,0.08)] dark:bg-slate-800/50 dark:open:bg-teal-950/25">
         <GroupHeader
           icon={<Sliders className="h-4 w-4" />}
           title={isEnglish ? 'Custom breathing' : '사용자 맞춤 호흡'}
