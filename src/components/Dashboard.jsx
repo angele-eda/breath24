@@ -125,11 +125,8 @@ export default function Dashboard({
       </section>
 
       <section className="mt-7">
-        <div className="mb-4 flex items-center justify-between px-1">
-          <div>
-            <h2 className="text-xs font-bold uppercase text-[#527189] dark:text-[#9FB5C5]">Breathing exercises</h2>
-            <p className="mt-1 text-sm font-medium text-[#506A7D] dark:font-medium dark:text-[#C4D1DB]">{isEnglish ? "Choose today's rhythm." : '오늘의 리듬을 선택하세요.'}</p>
-          </div>
+        <div className="mb-3 flex items-center justify-between px-1">
+          <p className="text-sm font-medium text-[#506A7D] dark:font-medium dark:text-[#C4D1DB]">{isEnglish ? "Choose today's rhythm." : '오늘의 리듬을 선택하세요.'}</p>
           <button
             type="button"
             onClick={handleToggleTechniques}
