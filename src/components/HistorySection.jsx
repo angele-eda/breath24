@@ -64,9 +64,9 @@ export default function HistorySection({
 
   return (
     <div className="w-full max-w-3xl mx-auto px-5 py-6 space-y-5 animate-fade-in">
-      <section className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] p-6 text-[var(--text-title)] shadow-[0_4px_14px_rgba(30,70,90,0.08)] dark:border-white/10 dark:bg-slate-800/50 dark:text-slate-100 dark:shadow-sm">
-        <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-teal-300/40 bg-slate-800 shadow-[0_0_32px_rgba(45,212,191,0.14)]">
+      <section className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] px-6 py-2 text-[var(--text-title)] shadow-[0_4px_14px_rgba(30,70,90,0.08)] dark:border-white/10 dark:bg-slate-800/50 dark:text-slate-100 dark:shadow-sm">
+        <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
+          <div className="relative h-[68px] w-[68px] shrink-0 overflow-hidden rounded-full border border-teal-300/40 bg-slate-800 shadow-[0_0_32px_rgba(45,212,191,0.14)]">
             <img src={profileImage || USER_AVATAR_URL} alt={isEnglish ? 'Breathing practitioner' : '호흡 수행자'} className="h-full w-full object-cover" />
           </div>
 
