@@ -467,7 +467,9 @@ export default function App() {
     setActiveTab('settings');
     setCurrentScreen('settings');
     window.setTimeout(() => {
-      document.getElementById('session-duration-settings')?.scrollIntoView({
+      const sessionSettings = document.getElementById('session-duration-settings');
+      if (sessionSettings) sessionSettings.open = true;
+      sessionSettings?.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });

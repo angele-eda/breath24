@@ -119,7 +119,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         <p className="mt-1 text-sm text-slate-500">{isEnglish ? 'Adjust sound, session length, and your custom rhythm.' : '소리, 시간, 맞춤 호흡 리듬을 편하게 조절하세요.'}</p>
       </div>
 
-      <details open className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
         <GroupHeader
           icon={<Globe2 className="h-4 w-4" />}
           title={isEnglish ? 'Basic settings' : '기본 설정'}
@@ -147,7 +147,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         </div>
       </details>
 
-      <details open id="session-duration-settings" className="group scroll-mt-24 overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details id="session-duration-settings" className="group scroll-mt-24 overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
         <GroupHeader
           icon={<Timer className="h-4 w-4" />}
           title={isEnglish ? 'Breathing session' : '호흡 세션'}
