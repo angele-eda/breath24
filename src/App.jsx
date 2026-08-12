@@ -513,7 +513,7 @@ export default function App() {
     : fallbackProfileName;
 
   return (
-    <div className="mobile-type-tuned relative min-h-screen overflow-x-hidden bg-[var(--app-bg)] text-slate-800 transition-colors duration-300 dark:bg-[#0f172a] dark:text-slate-100 pb-20 md:pb-24 flex flex-col">
+    <div className={`mobile-type-tuned relative min-h-screen overflow-x-hidden bg-[var(--app-bg)] text-slate-800 transition-colors duration-300 dark:bg-[#0f172a] dark:text-slate-100 flex flex-col ${currentScreen === 'dashboard' ? 'pb-12 md:pb-16' : 'pb-20 md:pb-24'}`}>
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_18%,rgba(45,212,191,0.14),transparent_32rem)] dark:bg-[radial-gradient(circle_at_50%_18%,rgba(45,212,191,0.11),transparent_32rem)]" />
       {currentScreen !== 'breathing' && (
         <header className="sticky top-0 z-40 border-b border-[var(--surface-border)] bg-[var(--surface-card)] px-6 py-3.5 shadow-sm backdrop-blur-none dark:border-white/5 dark:bg-slate-950/35 dark:shadow-none dark:backdrop-blur-xl">
