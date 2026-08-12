@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Activity, Globe2, Mic, Moon, Play, Settings, Sliders, Smartphone, Sun, Timer, Volume2 } from 'lucide-react';
+import { Activity, ChevronDown, Globe2, Mic, Moon, Play, Settings, Sliders, Smartphone, Sun, Timer, Volume2 } from 'lucide-react';
 import { playAirflow, stopAirflow } from '../utils/audio';
 
 const DURATION_OPTIONS = [
@@ -95,6 +95,19 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
     </div>
   );
 
+  const GroupHeader = ({ icon, title, description }) => (
+    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 marker:content-none">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-300/10 text-teal-300">{icon}</span>
+        <span className="min-w-0">
+          <span className="block text-sm font-bold text-slate-100">{title}</span>
+          <span className="mt-0.5 block text-[11px] font-medium leading-4 text-slate-500">{description}</span>
+        </span>
+      </div>
+      <ChevronDown className="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180" />
+    </summary>
+  );
+
   return (
     <div className="w-full max-w-3xl mx-auto px-5 py-6 space-y-5 animate-fade-in">
       <div className="px-1">
@@ -106,7 +119,13 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
         <p className="mt-1 text-sm text-slate-500">{isEnglish ? 'Adjust sound, session length, and your custom rhythm.' : '소리, 시간, 맞춤 호흡 리듬을 편하게 조절하세요.'}</p>
       </div>
 
-      <section className="overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+      <details open className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+        <GroupHeader
+          icon={<Globe2 className="h-4 w-4" />}
+          title={isEnglish ? 'Basic settings' : '기본 설정'}
+          description={isEnglish ? 'Language and screen appearance' : '언어와 화면 모드를 설정합니다.'}
+        />
+        <div className="border-t border-white/10">
         <ToggleRow
           icon={settings.darkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           title={isEnglish ? 'Theme' : '테마 모드'}
@@ -125,8 +144,17 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             ))}
           </div>
         </div>
+        </div>
+      </details>
 
-        <div id="session-duration-settings" className="scroll-mt-24 border-b border-white/10 p-4">
+      <details open id="session-duration-settings" className="group scroll-mt-24 overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+        <GroupHeader
+          icon={<Timer className="h-4 w-4" />}
+          title={isEnglish ? 'Breathing session' : '호흡 세션'}
+          description={isEnglish ? 'Default duration and vibration' : '기본 시간과 진동을 설정합니다.'}
+        />
+        <div className="border-t border-white/10">
+        <div className="border-b border-white/10 p-4">
           <div className="flex items-center gap-3.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-300/10 text-teal-300">
               <Timer className="h-5 w-5" />
@@ -153,6 +181,17 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
           </div>
         </div>
 
+        <ToggleRow icon={<Smartphone className="h-5 w-5" />} title={isEnglish ? 'Vibration' : '진동 효과'} description={isEnglish ? 'Use subtle vibration feedback on supported devices.' : '지원 기기에서 미세한 진동 피드백을 사용합니다.'} settingKey="vibrationCuesEnabled" />
+        </div>
+      </details>
+
+      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+        <GroupHeader
+          icon={<Volume2 className="h-4 w-4" />}
+          title={isEnglish ? 'Sound and voice' : '소리 및 음성'}
+          description={isEnglish ? 'Chimes, airflow, and voice guidance' : '종소리, 바람 소리와 음성 안내를 설정합니다.'}
+        />
+        <div className="border-t border-white/10">
         <ToggleRow icon={<Volume2 className="h-5 w-5" />} title={isEnglish ? 'Breathing sounds' : '호흡 소리'} description={isEnglish ? 'Play gentle chimes and soft airflow with the breathing rhythm.' : '단계 종소리와 부드러운 공기 흐름음을 재생합니다.'} settingKey="soundCuesEnabled" />
         <div className="border-b border-white/10 px-4 pb-4 pt-3">
           <div className="mb-2.5 flex items-center justify-between text-xs font-semibold">
@@ -211,15 +250,17 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             ))}
           </div>
         </div>
-        <ToggleRow icon={<Smartphone className="h-5 w-5" />} title={isEnglish ? 'Vibration' : '진동 효과'} description={isEnglish ? 'Use subtle vibration feedback on supported devices.' : '지원 기기에서 미세한 진동 피드백을 사용합니다.'} settingKey="vibrationCuesEnabled" />
-      </section>
-
-      <section className="rounded-lg border border-white/10 bg-slate-900/60 p-5 text-slate-100 shadow-sm dark:bg-slate-800/50">
-        <div className="flex items-center gap-2 border-b border-white/10 pb-4">
-          <Sliders className="h-4 w-4 text-teal-300" />
-          <h3 className="text-sm font-bold text-slate-100">{isEnglish ? 'Custom breathing ratio' : '사용자 맞춤 호흡 비율'}</h3>
         </div>
-        <p className="mt-4 text-xs leading-5 text-slate-500">
+      </details>
+
+      <details className="group overflow-hidden rounded-lg border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm dark:bg-slate-800/50">
+        <GroupHeader
+          icon={<Sliders className="h-4 w-4" />}
+          title={isEnglish ? 'Custom breathing' : '사용자 맞춤 호흡'}
+          description={isEnglish ? 'Set inhale, hold, and exhale timing' : '들숨·멈춤·날숨 시간을 직접 조절합니다.'}
+        />
+        <div className="border-t border-white/10 p-5">
+        <p className="text-xs leading-5 text-slate-500">
           {isEnglish ? 'Choose Custom breathing to use the timing below.' : '호흡법 선택에서 사용자 맞춤 호흡을 고르면 아래 비율로 세션이 진행됩니다.'}
         </p>
 
@@ -239,7 +280,8 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             {settings.customInhale} - {settings.customHold > 0 ? `${settings.customHold} - ` : ''}{settings.customExhale}{settings.customHold2 > 0 ? ` - ${settings.customHold2}` : ''}{isEnglish ? 's' : '초'}
           </span>
         </div>
-      </section>
+        </div>
+      </details>
     </div>
   );
 }
