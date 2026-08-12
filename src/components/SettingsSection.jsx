@@ -1,5 +1,6 @@
-import React from 'react';
-import { Activity, Globe2, Mic, Moon, Settings, Sliders, Smartphone, Sun, Timer, Volume2 } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Activity, Globe2, Mic, Moon, Play, Settings, Sliders, Smartphone, Sun, Timer, Volume2 } from 'lucide-react';
+import { playAirflow, stopAirflow } from '../utils/audio';
 
 const DURATION_OPTIONS = [
   { label: '1분', value: 60 },
@@ -29,6 +30,13 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
       soundVolume,
       soundCuesEnabled: soundVolume > 0
     });
+  };
+
+  useEffect(() => () => stopAirflow(0.1), []);
+
+  const previewAirflow = () => {
+    const previewVolume = settings.soundVolume > 0 ? settings.soundVolume : 65;
+    playAirflow('exhale', 2.4, true, previewVolume);
   };
 
   const adjustCustomPart = (key, delta, min, max) => {
@@ -160,7 +168,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             max="100"
             step="5"
             value={settings.soundVolume ?? 65}
-            onChange={(event) => setSoundVolume(event.target.value)}
+            onInput={(event) => setSoundVolume(event.currentTarget.value)}
             className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-700 accent-teal-300"
             aria-label={isEnglish ? 'Breathing sound volume' : '호흡 소리 크기'}
           />
@@ -168,6 +176,14 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             <span>{isEnglish ? 'Quiet' : '작게'}</span>
             <span>{isEnglish ? 'Loud' : '크게'}</span>
           </div>
+          <button
+            type="button"
+            onClick={previewAirflow}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-teal-300/20 bg-teal-300/10 px-3 py-1.5 text-[11px] font-bold text-teal-300 transition hover:bg-teal-300/15 active:scale-95"
+          >
+            <Play className="h-3.5 w-3.5 fill-current" />
+            {isEnglish ? 'Preview airflow' : '바람 소리 미리 듣기'}
+          </button>
         </div>
         <ToggleRow icon={<Mic className="h-5 w-5" />} title={isEnglish ? 'Voice guidance' : '음성 안내'} description={isEnglish ? 'Use voice guidance at the start and finish.' : '호흡 시작과 완료를 음성으로 안내합니다.'} settingKey="voiceCuesEnabled" />
         <div className="flex items-center justify-between gap-4 border-b border-white/10 p-4">
