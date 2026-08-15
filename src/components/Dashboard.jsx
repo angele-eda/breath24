@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Activity, ArrowRight, Box, Compass, Flame, Moon, Sparkles, Trophy, Waves, Wind } from 'lucide-react';
+import { Activity, ArrowRight, Box, Compass, Moon, MoveHorizontal, Sparkles, Trophy, Waves, Wind } from 'lucide-react';
 import { TECHNIQUES, getDurationLabel } from '../data/techniques';
 import { localizeTechnique } from '../i18n';
 
@@ -11,7 +11,7 @@ const ICON_BY_TECHNIQUE = {
   'box-breathing': Box,
   '4-4-6': Waves,
   '5-5-coherent': Activity,
-  'belly-breathing': Flame,
+  'belly-breathing': MoveHorizontal,
   'alternate-nostril': Compass,
   custom: Sparkles
 };
