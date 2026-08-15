@@ -22,7 +22,7 @@ const TAGS_BY_TECHNIQUE = {
   'box-breathing': ['집중', '균형'],
   '4-4-6': ['진정', '리셋'],
   '5-5-coherent': ['리듬', '균형'],
-  'belly-breathing': ['복식', '편안함'],
+  'belly-breathing': ['횡격막', '이완'],
   'alternate-nostril': ['균형', '집중'],
   custom: ['맞춤', '설정']
 };

@@ -97,8 +97,8 @@ export const TECHNIQUES = [
   },
   {
     id: 'belly-breathing',
-    name: '복식 호흡',
-    description: '가슴은 편안히 두고 배가 부풀고 내려앉는 감각에 집중하는 호흡입니다.',
+    name: '횡격막 호흡',
+    description: '코로 들이마시며 배와 아랫갈비뼈를 넓히고, 길게 내쉬며 몸의 긴장을 이완하는 호흡입니다.',
     rhythm: '4-6',
     phases: [
       { type: 'inhale', label: '배로 들이마셔', speech: '배로 들이마셔', seconds: 4, instruction: '배가 풍선처럼 부풀어 오르게 해요.' },

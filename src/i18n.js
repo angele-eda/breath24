@@ -67,7 +67,7 @@ const techniqueEn = {
   '5-5-coherent': { name: '5-5 Coherent Breathing', description: 'An even 5-second inhale and exhale for a balanced rhythm.', tags: ['Rhythm', 'Balance'], phases: [
     ['Inhale', 'Breathe in at a comfortable pace.'], ['Exhale', 'Breathe out calmly for the same length.']
   ]},
-  'belly-breathing': { name: 'Belly Breathing', description: 'Focus on the belly rising and falling while the chest stays relaxed.', tags: ['Belly', 'Comfort'], phases: [
+  'belly-breathing': { name: 'Diaphragmatic Breathing', description: 'Inhale through the nose, expanding the belly and lower ribs, then exhale slowly to release tension.', tags: ['Diaphragm', 'Relaxation'], phases: [
     ['Breathe into your belly', 'Let your belly expand like a balloon.'], ['Exhale slowly', 'Let your belly settle naturally.']
   ]},
   'alternate-nostril': { name: 'Alternate Nostril Breathing', description: 'Alternate between nostrils to support balance and focus.', tags: ['Balance', 'Focus'], phases: [
