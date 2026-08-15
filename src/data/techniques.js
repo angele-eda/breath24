@@ -63,6 +63,16 @@ export const TECHNIQUES = [
     ]
   },
   {
+    id: 'belly-breathing',
+    name: '횡격막 호흡',
+    description: '코로 들이마시며 배와 아랫갈비뼈를 넓히고, 길게 내쉬며 몸의 긴장을 이완하는 호흡입니다.',
+    rhythm: '4-6',
+    phases: [
+      { type: 'inhale', label: '배로 들이마셔', speech: '배로 들이마셔', seconds: 4, instruction: '배가 풍선처럼 부풀어 오르게 해요.' },
+      { type: 'exhale', label: '천천히 내쉬어', speech: '천천히 내쉬어', seconds: 6, instruction: '배가 자연스럽게 내려앉도록 내쉬어요.' }
+    ]
+  },
+  {
     id: 'box-breathing',
     name: '박스 호흡',
     description: '4초씩 들숨, 멈춤, 날숨, 멈춤을 반복하는 집중 회복 호흡입니다.',
@@ -93,16 +103,6 @@ export const TECHNIQUES = [
     phases: [
       { type: 'inhale', label: '들이마셔', speech: '들이마셔', seconds: 5, instruction: '편안한 속도로 들이마셔요.' },
       { type: 'exhale', label: '내쉬어', speech: '내쉬어', seconds: 5, instruction: '같은 길이로 차분히 내쉬어요.' }
-    ]
-  },
-  {
-    id: 'belly-breathing',
-    name: '횡격막 호흡',
-    description: '코로 들이마시며 배와 아랫갈비뼈를 넓히고, 길게 내쉬며 몸의 긴장을 이완하는 호흡입니다.',
-    rhythm: '4-6',
-    phases: [
-      { type: 'inhale', label: '배로 들이마셔', speech: '배로 들이마셔', seconds: 4, instruction: '배가 풍선처럼 부풀어 오르게 해요.' },
-      { type: 'exhale', label: '천천히 내쉬어', speech: '천천히 내쉬어', seconds: 6, instruction: '배가 자연스럽게 내려앉도록 내쉬어요.' }
     ]
   },
   {
