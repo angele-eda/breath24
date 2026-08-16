@@ -76,6 +76,7 @@ export default function Dashboard({
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const collapseDuration = prefersReducedMotion ? 0 : 550;
+    const collapseCleanupDelay = collapseDuration + (prefersReducedMotion ? 0 : 80);
     const listTop = techniqueListRef.current?.getBoundingClientRect().top ?? 0;
     const cardHeight = selectedCard?.getBoundingClientRect().height ?? 0;
     const bottomNavigation = document.querySelector('nav');
@@ -103,7 +104,7 @@ export default function Dashboard({
     window.setTimeout(() => {
       setShowAllTechniques(false);
       setIsCollapsingTechniques(false);
-    }, collapseDuration);
+    }, collapseCleanupDelay);
   };
 
   return (
