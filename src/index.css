@@ -151,6 +151,40 @@ button:active .mode-toggle-moon {
   border-color: rgba(45, 210, 195, 0.16);
 }
 
+@keyframes homeIdleBreathInner {
+  0%, 100% {
+    transform: scale(0.985);
+    opacity: 0.72;
+  }
+  50% {
+    transform: scale(1.035);
+    opacity: 1;
+  }
+}
+
+@keyframes homeIdleBreathOuter {
+  0%, 100% {
+    transform: scale(0.985);
+    opacity: 0.58;
+  }
+  50% {
+    transform: scale(1.045);
+    opacity: 0.86;
+  }
+}
+
+.home-wave-ring-inner {
+  animation: homeIdleBreathInner 6s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.home-wave-ring-outer {
+  animation: homeIdleBreathOuter 6s 180ms ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
 @keyframes breathingWaveSpread {
   0% {
     transform: scale(0.9);
@@ -220,6 +254,8 @@ button:active .mode-toggle-moon {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-wave-ring-inner,
+  .home-wave-ring-outer,
   .breathing-wave-ring,
   .summary-completion-orb,
   .summary-sparkles-icon,
