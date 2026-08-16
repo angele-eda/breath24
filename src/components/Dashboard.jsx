@@ -39,6 +39,7 @@ export default function Dashboard({
 }) {
   const isEnglish = language === 'en';
   const [showAllTechniques, setShowAllTechniques] = useState(false);
+  const [isCollapsingTechniques, setIsCollapsingTechniques] = useState(false);
   const techniqueListRef = useRef(null);
   const localizedTechniques = TECHNIQUES.map((technique) => localizeTechnique(technique, language));
   const currentTechnique = localizedTechniques.find((tech) => tech.id === selectedTechniqueId) || localizedTechniques[0];
@@ -75,16 +76,21 @@ export default function Dashboard({
     setSelectedTechniqueId(techniqueId);
     if (!showAllTechniques) return;
 
-    setShowAllTechniques(false);
-    window.requestAnimationFrame(() => {
+    const collapseDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180;
+    setIsCollapsingTechniques(true);
+    window.setTimeout(() => {
+      setShowAllTechniques(false);
       window.requestAnimationFrame(() => {
-        const collapsedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
-        if (typeof cardTop !== 'number' || !collapsedCard) return;
-
-        const topDifference = collapsedCard.getBoundingClientRect().top - cardTop;
-        window.scrollBy({ top: topDifference, behavior: 'auto' });
+        window.requestAnimationFrame(() => {
+          const collapsedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
+          if (typeof cardTop === 'number' && collapsedCard) {
+            const topDifference = collapsedCard.getBoundingClientRect().top - cardTop;
+            window.scrollBy({ top: topDifference, behavior: 'auto' });
+          }
+          setIsCollapsingTechniques(false);
+        });
       });
-    });
+    }, collapseDuration);
   };
 
   return (
@@ -156,7 +162,13 @@ export default function Dashboard({
           </button>
         </div>
 
-        <div ref={techniqueListRef} id="breathing-technique-list" className="grid grid-cols-1 gap-3">
+        <div
+          ref={techniqueListRef}
+          id="breathing-technique-list"
+          className={`grid grid-cols-1 gap-3 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none ${
+            isCollapsingTechniques ? 'pointer-events-none translate-y-1 scale-[0.99] opacity-0' : 'translate-y-0 scale-100 opacity-100'
+          }`}
+        >
           {visibleTechniques.map((tech) => {
             const isSelected = selectedTechniqueId === tech.id;
             const TechniqueIcon = ICON_BY_TECHNIQUE[tech.id] || Wind;
