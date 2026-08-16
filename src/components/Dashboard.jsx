@@ -75,7 +75,7 @@ export default function Dashboard({
     if (!showAllTechniques) return;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const collapseDuration = prefersReducedMotion ? 0 : 450;
+    const collapseDuration = prefersReducedMotion ? 0 : 550;
     const listTop = techniqueListRef.current?.getBoundingClientRect().top ?? 0;
     const cardHeight = selectedCard?.getBoundingClientRect().height ?? 0;
     const bottomNavigation = document.querySelector('nav');
@@ -92,9 +92,7 @@ export default function Dashboard({
       const scrollStartedAt = performance.now();
       const animateScroll = (now) => {
         const progress = Math.min((now - scrollStartedAt) / collapseDuration, 1);
-        const easedProgress = progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const easedProgress = (1 - Math.cos(Math.PI * progress)) / 2;
         const nextScrollTop = initialScrollTop + ((targetScrollTop - initialScrollTop) * easedProgress);
         window.scrollTo({ top: nextScrollTop, behavior: 'auto' });
         if (progress < 1) window.requestAnimationFrame(animateScroll);
@@ -181,7 +179,7 @@ export default function Dashboard({
           ref={techniqueListRef}
           id="breathing-technique-list"
           style={{ overflowAnchor: 'none' }}
-          className={`grid grid-cols-1 transition-[gap] duration-[450ms] ease-in-out motion-reduce:transition-none ${
+          className={`grid grid-cols-1 transition-[gap] duration-[550ms] ease-in-out motion-reduce:transition-none ${
             isCollapsingTechniques ? 'pointer-events-none gap-0' : 'gap-3'
           }`}
         >
@@ -194,7 +192,7 @@ export default function Dashboard({
             return (
               <div
                 key={tech.id}
-                className={`grid transition-[grid-template-rows,opacity] duration-[450ms] ease-in-out motion-reduce:transition-none ${
+                className={`grid transition-[grid-template-rows,opacity] duration-[550ms] ease-in-out motion-reduce:transition-none ${
                   isSlidingClosed ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
                 }`}
               >
