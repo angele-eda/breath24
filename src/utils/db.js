@@ -4,7 +4,7 @@ const SETTINGS_KEY = 'breathe_settings_v1';
 const DEFAULT_SETTINGS = {
   defaultDurationSeconds: 300,
   soundCuesEnabled: true,
-  soundVolume: 65,
+  soundVolume: 45,
   voiceCuesEnabled: true,
   voiceVolume: 85,
   voiceCuesDefaultedOff: true,

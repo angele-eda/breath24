@@ -33,11 +33,11 @@ export function stopSpeech() {
   }
 }
 
-function getSoundVolumeScale(volumePercent = 65) {
+function getSoundVolumeScale(volumePercent = 45) {
   return Math.max(0, Math.min(100, Number(volumePercent) || 0)) / 65;
 }
 
-export function playChime(type = 'inhale', enabled = true, volumePercent = 65) {
+export function playChime(type = 'inhale', enabled = true, volumePercent = 45) {
   if (!enabled) return;
 
   const ctx = getAudioContext();
@@ -111,7 +111,7 @@ export function stopAirflow(fadeSeconds = 0.25) {
   }
 }
 
-export function playAirflow(type, durationSeconds, enabled = true, volumePercent = 65) {
+export function playAirflow(type, durationSeconds, enabled = true, volumePercent = 45) {
   stopAirflow(0.25);
   if (!enabled || !['inhale', 'exhale'].includes(type)) return;
 

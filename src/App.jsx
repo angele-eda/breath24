@@ -129,7 +129,7 @@ export default function App() {
 
   const handleSoundEnabled = (enabled) => {
     const soundVolume = enabled && settingsRef.current.soundVolume <= 0
-      ? 65
+      ? 45
       : settingsRef.current.soundVolume;
     handleUpdateSettings({ ...settingsRef.current, soundCuesEnabled: enabled, soundVolume });
 

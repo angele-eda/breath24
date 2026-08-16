@@ -18,7 +18,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
     const enabled = !settings[key];
     const nextSettings = { ...settings, [key]: enabled };
     if (key === 'soundCuesEnabled' && enabled && settings.soundVolume <= 0) {
-      nextSettings.soundVolume = 65;
+      nextSettings.soundVolume = 45;
     }
     onUpdateSettings(nextSettings);
   };
@@ -35,7 +35,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
   useEffect(() => () => stopAirflow(0.1), []);
 
   const previewAirflow = () => {
-    const previewVolume = settings.soundVolume > 0 ? settings.soundVolume : 65;
+    const previewVolume = settings.soundVolume > 0 ? settings.soundVolume : 45;
     playAirflow('exhale', 2.4, true, previewVolume);
   };
 
@@ -198,7 +198,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             <label htmlFor="breathing-sound-volume" className="text-slate-400">
               {isEnglish ? 'Sound volume' : '소리 크기'}
             </label>
-            <span className="tabular-nums text-teal-300">{settings.soundVolume ?? 65}%</span>
+            <span className="tabular-nums text-teal-300">{settings.soundVolume ?? 45}%</span>
           </div>
           <input
             id="breathing-sound-volume"
@@ -206,7 +206,7 @@ export default function SettingsSection({ settings, onUpdateSettings, language =
             min="0"
             max="100"
             step="5"
-            value={settings.soundVolume ?? 65}
+            value={settings.soundVolume ?? 45}
             onInput={(event) => setSoundVolume(event.currentTarget.value)}
             className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-700 accent-teal-300"
             aria-label={isEnglish ? 'Breathing sound volume' : '호흡 소리 크기'}
