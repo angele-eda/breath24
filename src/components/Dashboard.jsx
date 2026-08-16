@@ -50,6 +50,7 @@ export default function Dashboard({
   const visibleTechniques = showAllTechniques
     ? localizedTechniques
     : [currentTechnique];
+  const techniquesExpanded = showAllTechniques && !isCollapsingTechniques;
   const durationLabel = (technique) => {
     if (!isEnglish) return getDurationLabel(technique, settings);
     return `${technique.phases.map((phase) => phase.seconds).join(' - ')} sec`;
@@ -168,11 +169,18 @@ export default function Dashboard({
             type="button"
             onClick={handleToggleTechniques}
             className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-xs font-bold text-teal-600 transition-colors hover:text-teal-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/40 dark:text-teal-300 dark:hover:text-teal-200"
-            aria-expanded={showAllTechniques}
+            aria-expanded={techniquesExpanded}
             aria-controls="breathing-technique-list"
           >
-            {showAllTechniques ? (isEnglish ? 'Collapse' : '접기') : (isEnglish ? 'View all' : '전체 보기')}
-            <ArrowRight className={`h-3.5 w-3.5 transition-transform ${showAllTechniques ? '-rotate-90' : ''}`} />
+            <span className="grid">
+              <span className={`col-start-1 row-start-1 transition-opacity duration-300 ${techniquesExpanded ? 'opacity-0' : 'opacity-100'}`}>
+                {isEnglish ? 'View all' : '전체 보기'}
+              </span>
+              <span className={`col-start-1 row-start-1 transition-opacity duration-300 ${techniquesExpanded ? 'opacity-100' : 'opacity-0'}`}>
+                {isEnglish ? 'Collapse' : '접기'}
+              </span>
+            </span>
+            <ArrowRight className={`h-3.5 w-3.5 transition-transform duration-300 ${techniquesExpanded ? '-rotate-90' : ''}`} />
           </button>
         </div>
 
