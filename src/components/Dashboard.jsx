@@ -69,6 +69,23 @@ export default function Dashboard({
       });
     });
   };
+  const handleTechniqueSelect = (techniqueId, selectedCard) => {
+    const cardTop = selectedCard?.getBoundingClientRect().top;
+
+    setSelectedTechniqueId(techniqueId);
+    if (!showAllTechniques) return;
+
+    setShowAllTechniques(false);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const collapsedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
+        if (typeof cardTop !== 'number' || !collapsedCard) return;
+
+        const topDifference = collapsedCard.getBoundingClientRect().top - cardTop;
+        window.scrollBy({ top: topDifference, behavior: 'auto' });
+      });
+    });
+  };
 
   return (
     <div className="home-dashboard mx-auto w-full max-w-[480px] px-5 py-5 animate-fade-in">
@@ -148,7 +165,8 @@ export default function Dashboard({
             return (
               <button
                 key={tech.id}
-                onClick={() => setSelectedTechniqueId(tech.id)}
+                data-technique-card
+                onClick={(event) => handleTechniqueSelect(tech.id, event.currentTarget)}
                 className={`group relative overflow-hidden rounded-lg border p-5 text-left transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 ${
                   isSelected
                     ? 'border-[#35CDBB] bg-[#EAF9F7] shadow-[0_0_24px_rgba(36,201,181,0.12)] dark:border-teal-300/70 dark:bg-teal-300/10 dark:shadow-[0_0_24px_rgba(45,212,191,0.12)]'
