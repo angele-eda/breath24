@@ -238,9 +238,6 @@ export default function App() {
     setPhaseTimeRemaining(phase.seconds);
     playChime(phase.type, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
     playAirflow(phase.type, phase.seconds, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
-    if (selectedTechniqueId !== '4-2-6') {
-      speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate, liveSettings.voiceVolume / 100);
-    }
   };
 
   const completeSession = () => {
@@ -327,9 +324,9 @@ export default function App() {
       });
     }
 
-    const introAudio = technique.id === '4-2-6'
-      ? `/audio/intro/${liveSettings.language === 'ko' ? 'ko' : 'en'}-4-2-6-${liveSettings.voiceGender || 'female'}.wav`
-      : technique.introAudio;
+    const introLanguage = liveSettings.language === 'ko' ? 'ko' : 'en';
+    const introGender = liveSettings.voiceGender === 'male' ? 'male' : 'female';
+    const introAudio = `/audio/intro/${introLanguage}-${technique.id}-${introGender}.wav`;
     const introPromise = introAudio
       ? playGuideAudio(introAudio, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100)
       : Promise.resolve(false);
@@ -355,6 +352,11 @@ export default function App() {
         setSessionRhythm(rhythmRef.current);
       }
 
+      if (elapsedRef.current >= durationRef.current) {
+        completeSession();
+        return;
+      }
+
       if (phaseRemainingRef.current <= 0) {
         const nextIndex = (phaseIndexRef.current + 1) % phasesRef.current.length;
         if (nextIndex === 0) {
@@ -362,10 +364,6 @@ export default function App() {
           setCyclesCompleted(cyclesRef.current);
         }
         applyPhase(nextIndex);
-      }
-
-      if (elapsedRef.current >= durationRef.current) {
-        completeSession();
       }
     }, 1000);
   };
@@ -397,9 +395,6 @@ export default function App() {
     const liveSettings = settingsRef.current;
     if (phase) {
       playAirflow(phase.type, phaseRemainingRef.current, liveSettings.soundCuesEnabled, liveSettings.soundVolume);
-    }
-    if (phase && selectedTechniqueId !== '4-2-6') {
-      speakText(phase.speech, liveSettings.voiceCuesEnabled, liveSettings.voiceRate, liveSettings.voiceVolume / 100);
     }
   };
 
