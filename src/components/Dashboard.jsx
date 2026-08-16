@@ -87,6 +87,11 @@ export default function Dashboard({
             top: 0,
             behavior: prefersReducedMotion ? 'auto' : 'smooth'
           });
+          if (!prefersReducedMotion) {
+            window.setTimeout(() => {
+              scrollRoot.scrollTop = 0;
+            }, 500);
+          }
         });
       });
     }, collapseDuration);
