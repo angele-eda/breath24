@@ -172,7 +172,7 @@ export default function Dashboard({
                   isSlidingClosed ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
                 }`}
               >
-                <div className="min-h-0 overflow-hidden">
+                <div className={`min-h-0 ${isSlidingClosed ? 'overflow-hidden' : 'overflow-visible'}`}>
                   <button
                     data-technique-card
                     onClick={() => handleTechniqueSelect(tech.id)}
