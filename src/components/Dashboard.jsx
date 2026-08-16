@@ -70,26 +70,15 @@ export default function Dashboard({
       });
     });
   };
-  const handleTechniqueSelect = (techniqueId, selectedCard) => {
-    const cardTop = selectedCard?.getBoundingClientRect().top;
-
+  const handleTechniqueSelect = (techniqueId) => {
     setSelectedTechniqueId(techniqueId);
     if (!showAllTechniques) return;
 
-    const collapseDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180;
+    const collapseDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;
     setIsCollapsingTechniques(true);
     window.setTimeout(() => {
       setShowAllTechniques(false);
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          const collapsedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
-          if (typeof cardTop === 'number' && collapsedCard) {
-            const topDifference = collapsedCard.getBoundingClientRect().top - cardTop;
-            window.scrollBy({ top: topDifference, behavior: 'auto' });
-          }
-          setIsCollapsingTechniques(false);
-        });
-      });
+      setIsCollapsingTechniques(false);
     }, collapseDuration);
   };
 
@@ -165,52 +154,61 @@ export default function Dashboard({
         <div
           ref={techniqueListRef}
           id="breathing-technique-list"
-          className={`grid grid-cols-1 gap-3 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none ${
-            isCollapsingTechniques ? 'pointer-events-none translate-y-1 scale-[0.99] opacity-0' : 'translate-y-0 scale-100 opacity-100'
+          className={`grid grid-cols-1 transition-[gap] duration-300 ease-in-out motion-reduce:transition-none ${
+            isCollapsingTechniques ? 'pointer-events-none gap-0' : 'gap-3'
           }`}
         >
           {visibleTechniques.map((tech) => {
             const isSelected = selectedTechniqueId === tech.id;
             const TechniqueIcon = ICON_BY_TECHNIQUE[tech.id] || Wind;
             const tags = isEnglish ? tech.tags : (TAGS_BY_TECHNIQUE[tech.id] || ['호흡']);
+            const isSlidingClosed = isCollapsingTechniques && !isSelected;
 
             return (
-              <button
+              <div
                 key={tech.id}
-                data-technique-card
-                onClick={(event) => handleTechniqueSelect(tech.id, event.currentTarget)}
-                className={`group relative overflow-hidden rounded-lg border p-5 text-left transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 ${
-                  isSelected
-                    ? 'border-[#35CDBB] bg-[#EAF9F7] shadow-[0_0_24px_rgba(36,201,181,0.12)] dark:border-teal-300/70 dark:bg-teal-300/10 dark:shadow-[0_0_24px_rgba(45,212,191,0.12)]'
-                    : 'border-[var(--surface-border)] bg-[var(--surface-card)] hover:border-[#35CDBB] hover:bg-[#F7FCFC] dark:border-[#334A5F] dark:bg-slate-800/45 dark:hover:border-teal-300/45 dark:hover:bg-slate-800/70'
+                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none ${
+                  isSlidingClosed ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <h3 className={`text-lg font-bold ${isSelected ? 'text-[#0E9F90] dark:text-teal-300' : 'text-[#172F47] dark:text-[#F2F7FA]'}`}>
-                      {tech.name}
-                    </h3>
-                    <p className={`mt-2 line-clamp-2 break-keep text-sm font-medium leading-6 ${isSelected ? 'text-[#496D72] dark:text-[#C4D1DB]' : 'text-[#506A7D] dark:text-[#C4D1DB]'}`}>
-                      {tech.description}
-                    </p>
-                  </div>
-                  <TechniqueIcon className={`h-6 w-6 shrink-0 ${isSelected ? 'text-[#0E9F90] dark:text-teal-300' : 'text-[#527189] group-hover:text-[#0E9F90] dark:text-[#9FB5C5] dark:group-hover:text-teal-300'}`} />
-                </div>
+                <div className="min-h-0 overflow-hidden">
+                  <button
+                    data-technique-card
+                    onClick={() => handleTechniqueSelect(tech.id)}
+                    className={`group relative w-full overflow-hidden rounded-lg border p-5 text-left transition-[border-color,background-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 active:translate-y-0 ${
+                      isSelected
+                        ? 'border-[#35CDBB] bg-[#EAF9F7] shadow-[0_0_24px_rgba(36,201,181,0.12)] dark:border-teal-300/70 dark:bg-teal-300/10 dark:shadow-[0_0_24px_rgba(45,212,191,0.12)]'
+                        : 'border-[var(--surface-border)] bg-[var(--surface-card)] hover:border-[#35CDBB] hover:bg-[#F7FCFC] dark:border-[#334A5F] dark:bg-slate-800/45 dark:hover:border-teal-300/45 dark:hover:bg-slate-800/70'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <h3 className={`text-lg font-bold ${isSelected ? 'text-[#0E9F90] dark:text-teal-300' : 'text-[#172F47] dark:text-[#F2F7FA]'}`}>
+                          {tech.name}
+                        </h3>
+                        <p className={`mt-2 line-clamp-2 break-keep text-sm font-medium leading-6 ${isSelected ? 'text-[#496D72] dark:text-[#C4D1DB]' : 'text-[#506A7D] dark:text-[#C4D1DB]'}`}>
+                          {tech.description}
+                        </p>
+                      </div>
+                      <TechniqueIcon className={`h-6 w-6 shrink-0 ${isSelected ? 'text-[#0E9F90] dark:text-teal-300' : 'text-[#527189] group-hover:text-[#0E9F90] dark:text-[#9FB5C5] dark:group-hover:text-teal-300'}`} />
+                    </div>
 
-                <div className="mt-5 flex flex-wrap items-center gap-2">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-[#E4EDF2] px-3 py-1 text-[11px] font-semibold text-[#36566D] dark:bg-[#26384A] dark:text-[#C4D1DB]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                  <span className={`ml-auto text-[11px] font-semibold ${isSelected ? 'text-[#4F7479] dark:text-[#A8BAC7]' : 'text-[#647D90] dark:text-[#A8BAC7]'}`}>
-                    {durationLabel(tech)}
-                  </span>
-                </div>
-              </button>
+                    <div className="mt-5 flex flex-wrap items-center gap-2">
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-[#E4EDF2] px-3 py-1 text-[11px] font-semibold text-[#36566D] dark:bg-[#26384A] dark:text-[#C4D1DB]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      <span className={`ml-auto text-[11px] font-semibold ${isSelected ? 'text-[#4F7479] dark:text-[#A8BAC7]' : 'text-[#647D90] dark:text-[#A8BAC7]'}`}>
+                        {durationLabel(tech)}
+                      </span>
+                    </div>
+                  </button>
+                  </div>
+              </div>
             );
           })}
         </div>
