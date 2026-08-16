@@ -70,32 +70,41 @@ export default function Dashboard({
       });
     });
   };
-  const handleTechniqueSelect = (techniqueId) => {
+  const handleTechniqueSelect = (techniqueId, selectedCard) => {
     setSelectedTechniqueId(techniqueId);
     if (!showAllTechniques) return;
 
-    const collapseDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const collapseDuration = prefersReducedMotion ? 0 : 450;
+    const listTop = techniqueListRef.current?.getBoundingClientRect().top ?? 0;
+    const cardHeight = selectedCard?.getBoundingClientRect().height ?? 0;
+    const bottomNavigation = document.querySelector('nav');
+    const viewportHeight = window.visualViewport?.height || window.innerHeight;
+    const navigationHeight = bottomNavigation?.getBoundingClientRect().height || 72;
+    const desiredCardBottom = viewportHeight - navigationHeight - 16;
+    const targetScrollTop = Math.max(0, window.scrollY + listTop + cardHeight - desiredCardBottom);
+    const initialScrollTop = window.scrollY;
+
     setIsCollapsingTechniques(true);
+    if (prefersReducedMotion) {
+      window.scrollTo({ top: targetScrollTop, behavior: 'auto' });
+    } else {
+      const scrollStartedAt = performance.now();
+      const animateScroll = (now) => {
+        const progress = Math.min((now - scrollStartedAt) / collapseDuration, 1);
+        const easedProgress = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const nextScrollTop = initialScrollTop + ((targetScrollTop - initialScrollTop) * easedProgress);
+        window.scrollTo({ top: nextScrollTop, behavior: 'auto' });
+        if (progress < 1) window.requestAnimationFrame(animateScroll);
+      };
+      window.requestAnimationFrame(animateScroll);
+    }
+
     window.setTimeout(() => {
       setShowAllTechniques(false);
       setIsCollapsingTechniques(false);
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          const selectedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
-          const bottomNavigation = document.querySelector('nav');
-          if (!selectedCard) return;
-
-          const viewportHeight = window.visualViewport?.height || window.innerHeight;
-          const navigationHeight = bottomNavigation?.getBoundingClientRect().height || 72;
-          const desiredCardBottom = viewportHeight - navigationHeight - 16;
-          const cardBottom = selectedCard.getBoundingClientRect().bottom;
-          const scrollAdjustment = cardBottom - desiredCardBottom;
-
-          if (Math.abs(scrollAdjustment) > 2) {
-            window.scrollBy({ top: scrollAdjustment, behavior: 'smooth' });
-          }
-        });
-      });
     }, collapseDuration);
   };
 
@@ -192,7 +201,7 @@ export default function Dashboard({
                 <div className={`min-h-0 ${isSlidingClosed ? 'overflow-hidden' : 'overflow-visible'}`}>
                   <button
                     data-technique-card
-                    onClick={() => handleTechniqueSelect(tech.id)}
+                    onClick={(event) => handleTechniqueSelect(tech.id, event.currentTarget)}
                     className={`group relative w-full overflow-hidden rounded-lg border p-5 text-left transition-[border-color,background-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 active:translate-y-0 ${
                       isSelected
                         ? 'border-[#35CDBB] bg-[#EAF9F7] shadow-[0_0_24px_rgba(36,201,181,0.12)] dark:border-teal-300/70 dark:bg-teal-300/10 dark:shadow-[0_0_24px_rgba(45,212,191,0.12)]'
