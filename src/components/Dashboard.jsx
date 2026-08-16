@@ -79,6 +79,23 @@ export default function Dashboard({
     window.setTimeout(() => {
       setShowAllTechniques(false);
       setIsCollapsingTechniques(false);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          const selectedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
+          const bottomNavigation = document.querySelector('nav');
+          if (!selectedCard) return;
+
+          const viewportHeight = window.visualViewport?.height || window.innerHeight;
+          const navigationHeight = bottomNavigation?.getBoundingClientRect().height || 72;
+          const desiredCardBottom = viewportHeight - navigationHeight - 16;
+          const cardBottom = selectedCard.getBoundingClientRect().bottom;
+          const scrollAdjustment = cardBottom - desiredCardBottom;
+
+          if (Math.abs(scrollAdjustment) > 2) {
+            window.scrollBy({ top: scrollAdjustment, behavior: 'smooth' });
+          }
+        });
+      });
     }, collapseDuration);
   };
 
