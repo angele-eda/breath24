@@ -82,7 +82,8 @@ export default function Dashboard({
       setIsCollapsingTechniques(false);
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-          window.scrollTo({
+          const scrollRoot = document.scrollingElement || document.documentElement;
+          scrollRoot.scrollTo({
             top: 0,
             behavior: prefersReducedMotion ? 'auto' : 'smooth'
           });
@@ -163,6 +164,7 @@ export default function Dashboard({
         <div
           ref={techniqueListRef}
           id="breathing-technique-list"
+          style={{ overflowAnchor: 'none' }}
           className={`grid grid-cols-1 transition-[gap] duration-[450ms] ease-in-out motion-reduce:transition-none ${
             isCollapsingTechniques ? 'pointer-events-none gap-0' : 'gap-3'
           }`}
