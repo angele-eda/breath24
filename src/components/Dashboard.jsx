@@ -74,11 +74,26 @@ export default function Dashboard({
     setSelectedTechniqueId(techniqueId);
     if (!showAllTechniques) return;
 
-    const collapseDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const collapseDuration = prefersReducedMotion ? 0 : 450;
     setIsCollapsingTechniques(true);
     window.setTimeout(() => {
       setShowAllTechniques(false);
       setIsCollapsingTechniques(false);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          const selectedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
+          const cardTop = selectedCard?.getBoundingClientRect().top;
+          const comfortableTop = 112;
+
+          if (typeof cardTop === 'number' && cardTop < comfortableTop) {
+            window.scrollBy({
+              top: cardTop - comfortableTop,
+              behavior: prefersReducedMotion ? 'auto' : 'smooth'
+            });
+          }
+        });
+      });
     }, collapseDuration);
   };
 
@@ -154,7 +169,7 @@ export default function Dashboard({
         <div
           ref={techniqueListRef}
           id="breathing-technique-list"
-          className={`grid grid-cols-1 transition-[gap] duration-300 ease-in-out motion-reduce:transition-none ${
+          className={`grid grid-cols-1 transition-[gap] duration-[450ms] ease-in-out motion-reduce:transition-none ${
             isCollapsingTechniques ? 'pointer-events-none gap-0' : 'gap-3'
           }`}
         >
@@ -167,7 +182,7 @@ export default function Dashboard({
             return (
               <div
                 key={tech.id}
-                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none ${
+                className={`grid transition-[grid-template-rows,opacity] duration-[450ms] ease-in-out motion-reduce:transition-none ${
                   isSlidingClosed ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
                 }`}
               >
