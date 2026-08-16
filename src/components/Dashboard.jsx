@@ -74,26 +74,11 @@ export default function Dashboard({
     setSelectedTechniqueId(techniqueId);
     if (!showAllTechniques) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const collapseDuration = prefersReducedMotion ? 0 : 450;
+    const collapseDuration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450;
     setIsCollapsingTechniques(true);
     window.setTimeout(() => {
       setShowAllTechniques(false);
       setIsCollapsingTechniques(false);
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          const scrollRoot = document.scrollingElement || document.documentElement;
-          scrollRoot.scrollTo({
-            top: 0,
-            behavior: prefersReducedMotion ? 'auto' : 'smooth'
-          });
-          if (!prefersReducedMotion) {
-            window.setTimeout(() => {
-              scrollRoot.scrollTop = 0;
-            }, 500);
-          }
-        });
-      });
     }, collapseDuration);
   };
 
