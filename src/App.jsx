@@ -248,16 +248,22 @@ export default function App() {
     stopAirflow();
     setIsCompleting(true);
 
-    const technique = localizeTechnique(getTechniqueById(selectedTechniqueId), settingsRef.current.language);
     const liveSettings = settingsRef.current;
     playChime('complete', liveSettings.soundCuesEnabled, liveSettings.soundVolume);
-    if (technique.id === '4-2-6') {
-      playGuideAudio(`/audio/outro/${liveSettings.language === 'ko' ? 'ko' : 'en'}-female.wav`, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100);
-    } else if (technique.outroAudio) {
-      playGuideAudio(technique.outroAudio, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100);
-    } else {
-      speakText(liveSettings.language === 'ko' ? '호흡 세션이 완료되었습니다.' : 'Breathing session complete.', liveSettings.voiceCuesEnabled, liveSettings.voiceRate, liveSettings.voiceVolume / 100);
-    }
+    const outroLanguage = liveSettings.language === 'ko' ? 'ko' : 'en';
+    const outroGender = liveSettings.voiceGender === 'male' ? 'male' : 'female';
+    const outroAudio = `/audio/outro/${outroLanguage}-${outroGender}.wav`;
+    void playGuideAudio(outroAudio, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100)
+      .then((played) => {
+        if (!played) {
+          speakText(
+            outroLanguage === 'ko' ? '호흡 세션이 완료되었습니다.' : 'Breathing session complete.',
+            liveSettings.voiceCuesEnabled,
+            liveSettings.voiceRate,
+            liveSettings.voiceVolume / 100
+          );
+        }
+      });
     const completionTransitionMs = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300;
     completionTimeoutRef.current = window.setTimeout(() => {
       setCurrentScreen('summary');
