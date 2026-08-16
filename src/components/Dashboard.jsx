@@ -82,16 +82,10 @@ export default function Dashboard({
       setIsCollapsingTechniques(false);
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-          const selectedCard = techniqueListRef.current?.querySelector('[data-technique-card]');
-          const cardTop = selectedCard?.getBoundingClientRect().top;
-          const comfortableTop = 112;
-
-          if (typeof cardTop === 'number' && cardTop < comfortableTop) {
-            window.scrollBy({
-              top: cardTop - comfortableTop,
-              behavior: prefersReducedMotion ? 'auto' : 'smooth'
-            });
-          }
+          window.scrollTo({
+            top: 0,
+            behavior: prefersReducedMotion ? 'auto' : 'smooth'
+          });
         });
       });
     }, collapseDuration);
