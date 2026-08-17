@@ -132,7 +132,7 @@ export default function Dashboard({
       </section>
 
       <div className="mt-2 flex justify-center">
-        <div className="inline-flex items-center rounded-full border border-[#DCE8EC] bg-white/65 p-1 shadow-sm backdrop-blur-sm dark:border-teal-300/15 dark:bg-slate-900/35">
+        <div className="inline-flex items-center bg-transparent">
           {[
             { seconds: 120, ko: '2분', en: '2 min' },
             { seconds: 180, ko: '3분', en: '3 min' },
@@ -144,10 +144,10 @@ export default function Dashboard({
                 key={option.seconds}
                 type="button"
                 onClick={() => onDurationChange(option.seconds)}
-                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors ${
+                className={`border-b-2 px-3 py-1.5 text-[11px] transition-colors ${
                   isActive
-                    ? 'bg-[#DDF7F3] text-[#0E9F90] dark:bg-teal-300/15 dark:text-teal-200'
-                    : 'text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+                    ? 'border-[#24C9B5] font-bold text-[#0E9F90] dark:border-teal-300 dark:text-teal-200'
+                    : 'border-transparent font-semibold text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 aria-pressed={isActive}
               >
@@ -158,10 +158,10 @@ export default function Dashboard({
           <button
             type="button"
             onClick={onOpenDurationSettings}
-            className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors ${
+            className={`inline-flex items-center gap-1 border-b-2 px-3 py-1.5 text-[11px] transition-colors ${
               ![120, 180, 300].includes(settings.defaultDurationSeconds)
-                ? 'bg-[#DDF7F3] text-[#0E9F90] dark:bg-teal-300/15 dark:text-teal-200'
-                : 'text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+                ? 'border-[#24C9B5] font-bold text-[#0E9F90] dark:border-teal-300 dark:text-teal-200'
+                : 'border-transparent font-semibold text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
             }`}
             aria-label={isEnglish ? 'Custom duration settings' : '맞춤 시간 설정'}
           >
