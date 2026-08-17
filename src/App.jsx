@@ -561,7 +561,7 @@ export default function App() {
                   setDraftProfileName(displayProfileName);
                   setIsProfileEditorOpen((open) => !open);
                 }}
-                className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all"
+                className="flex items-center gap-2 rounded-full px-2 py-1 transition-opacity hover:opacity-80 active:opacity-70"
                 title={isEnglish ? 'Edit profile' : '프로필 바꾸기'}
               >
                 <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-gradient-to-br from-teal-50 to-sky-100 text-lg shadow-sm dark:border-slate-700 dark:from-slate-700 dark:to-slate-800">
@@ -594,13 +594,13 @@ export default function App() {
                         <img
                           src={settings.profileImage}
                           alt={isEnglish ? 'Profile preview' : '프로필 미리보기'}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="h-full w-full object-cover"
                         />
                       ) : (
                         <span aria-label={isEnglish ? 'Emoji profile preview' : '이모티콘 프로필 미리보기'}>{settings.profileEmoji || '😊'}</span>
                       )}
                       </span>
-                      <span className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-teal-500 text-white shadow-md transition-transform group-hover:scale-110 dark:border-slate-900">
+                      <span className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-teal-500 text-white shadow-md dark:border-slate-900">
                         <Camera className="h-3 w-3" />
                       </span>
                       <input type="file" accept="image/*" onChange={handleProfileImageChange} className="sr-only" />
