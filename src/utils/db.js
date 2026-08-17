@@ -2,7 +2,7 @@ const SESSIONS_KEY = 'breathe_sessions_v1';
 const SETTINGS_KEY = 'breathe_settings_v1';
 
 const DEFAULT_SETTINGS = {
-  defaultDurationSeconds: 300,
+  defaultDurationSeconds: 120,
   soundCuesEnabled: true,
   soundVolume: 45,
   voiceCuesEnabled: true,

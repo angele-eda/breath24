@@ -472,6 +472,10 @@ export default function App() {
     }, 80);
   };
 
+  const handleQuickDurationChange = (defaultDurationSeconds) => {
+    handleUpdateSettings({ ...settingsRef.current, defaultDurationSeconds });
+  };
+
   const handleOpenLegal = (type) => {
     window.history.replaceState(
       { ...window.history.state, scrollY: window.scrollY },
@@ -640,6 +644,8 @@ export default function App() {
             setSelectedTechniqueId={setSelectedTechniqueId}
             onStartSession={handleStartSession}
             onOpenLegal={handleOpenLegal}
+            onDurationChange={handleQuickDurationChange}
+            onOpenDurationSettings={handleOpenDurationSettings}
             settings={settings}
             language={settings.language}
           />

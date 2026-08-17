@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Activity, ArrowRight, Box, Compass, Flame, Moon, MoveHorizontal, Sparkles, Trophy, Waves, Wind } from 'lucide-react';
+import { Activity, ArrowRight, Box, Compass, Flame, Moon, MoveHorizontal, SlidersHorizontal, Sparkles, Trophy, Waves, Wind } from 'lucide-react';
 import { TECHNIQUES, getDurationLabel } from '../data/techniques';
 import { localizeTechnique } from '../i18n';
 
@@ -34,6 +34,8 @@ export default function Dashboard({
   setSelectedTechniqueId,
   onStartSession,
   onOpenLegal,
+  onDurationChange,
+  onOpenDurationSettings,
   settings,
   language = 'ko'
 }) {
@@ -129,7 +131,47 @@ export default function Dashboard({
         </div>
       </section>
 
-      <section className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-2 flex justify-center">
+        <div className="inline-flex items-center rounded-full border border-[#DCE8EC] bg-white/65 p-1 shadow-sm backdrop-blur-sm dark:border-teal-300/15 dark:bg-slate-900/35">
+          {[
+            { seconds: 120, ko: '2분', en: '2 min' },
+            { seconds: 180, ko: '3분', en: '3 min' },
+            { seconds: 300, ko: '5분', en: '5 min' }
+          ].map((option) => {
+            const isActive = settings.defaultDurationSeconds === option.seconds;
+            return (
+              <button
+                key={option.seconds}
+                type="button"
+                onClick={() => onDurationChange(option.seconds)}
+                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#DDF7F3] text-[#0E9F90] dark:bg-teal-300/15 dark:text-teal-200'
+                    : 'text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+                }`}
+                aria-pressed={isActive}
+              >
+                {isEnglish ? option.en : option.ko}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={onOpenDurationSettings}
+            className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors ${
+              ![120, 180, 300].includes(settings.defaultDurationSeconds)
+                ? 'bg-[#DDF7F3] text-[#0E9F90] dark:bg-teal-300/15 dark:text-teal-200'
+                : 'text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+            }`}
+            aria-label={isEnglish ? 'Custom duration settings' : '맞춤 시간 설정'}
+          >
+            <SlidersHorizontal className="h-3 w-3" />
+            {isEnglish ? 'Custom' : '맞춤'}
+          </button>
+        </div>
+      </div>
+
+      <section className="mt-3 grid grid-cols-2 gap-3">
         <div className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] p-4 text-[var(--text-title)] shadow-sm dark:border-[#334A5F] dark:bg-slate-800/50 dark:text-slate-100">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-xs font-medium text-[#172F47] dark:text-[#F2F7FA]">{isEnglish ? 'Breathing streak' : '연속 호흡 기록'}</h3>
