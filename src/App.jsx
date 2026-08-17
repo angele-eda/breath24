@@ -619,10 +619,10 @@ export default function App() {
                             key={emoji}
                             type="button"
                             onClick={() => handleProfileEmojiChange(emoji)}
-                            className={`flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 text-xl transition-all hover:scale-105 dark:bg-slate-800 ${
+                            className={`flex h-9 w-9 items-center justify-center rounded-full text-xl transition-colors ${
                               isSelected
-                                ? 'ring-2 ring-teal-400 ring-offset-2 ring-offset-white dark:ring-teal-300 dark:ring-offset-slate-900'
-                                : 'ring-1 ring-slate-200 dark:ring-slate-700'
+                                ? 'bg-teal-50 ring-1 ring-teal-400 dark:bg-teal-950/35 dark:ring-teal-300'
+                                : 'bg-slate-50 ring-1 ring-transparent hover:bg-teal-50/70 dark:bg-slate-800 dark:hover:bg-slate-700'
                             }`}
                             aria-label={`${isEnglish ? 'Select avatar' : '아바타 선택'} ${emoji}`}
                             aria-pressed={isSelected}
