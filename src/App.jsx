@@ -21,6 +21,7 @@ import {
 } from './utils/db';
 
 const USER_AVATAR_URL = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=60';
+const PROFILE_EMOJIS = ['😊', '😌', '🙂', '😄', '🌱', '🌿', '🌙', '☁️'];
 const getLegalDocumentFromUrl = () => {
   const documentType = new URLSearchParams(window.location.search).get('document');
   return ['terms', 'privacy'].includes(documentType) ? documentType : null;
@@ -212,8 +213,12 @@ export default function App() {
     const file = event.target.files?.[0];
     if (!file) return;
     const profileImage = await resizeProfileImage(file);
-    handleUpdateSettings({ ...settingsRef.current, profileImage });
+    handleUpdateSettings({ ...settingsRef.current, profileImage, profileEmoji: '' });
     event.target.value = '';
+  };
+
+  const handleProfileEmojiChange = (profileEmoji) => {
+    handleUpdateSettings({ ...settingsRef.current, profileEmoji, profileImage: '' });
   };
 
   const saveProfileName = () => {
@@ -559,8 +564,12 @@ export default function App() {
                 className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all"
                 title={isEnglish ? 'Edit profile' : '프로필 바꾸기'}
               >
-                <span className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 shadow-sm">
-                  <img src={settings.profileImage || USER_AVATAR_URL} alt={isEnglish ? 'User profile' : '사용자 프로필'} className="w-full h-full object-cover" />
+                <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-gradient-to-br from-teal-50 to-sky-100 text-lg shadow-sm dark:border-slate-700 dark:from-slate-700 dark:to-slate-800">
+                  {settings.profileImage ? (
+                    <img src={settings.profileImage} alt={isEnglish ? 'User profile' : '사용자 프로필'} className="h-full w-full object-cover" />
+                  ) : (
+                    <span aria-label={isEnglish ? 'Emoji profile' : '이모티콘 프로필'}>{settings.profileEmoji || '😊'}</span>
+                  )}
                 </span>
               </button>
 
@@ -580,12 +589,16 @@ export default function App() {
 
                   <div className="mt-3 flex justify-center">
                     <label className="group relative h-16 w-16 cursor-pointer rounded-full">
-                      <span className="block h-full w-full overflow-hidden rounded-full border-4 border-white bg-slate-100 shadow-lg dark:border-slate-800 dark:bg-slate-800">
-                      <img
-                        src={settings.profileImage || USER_AVATAR_URL}
-                        alt={isEnglish ? 'Profile preview' : '프로필 미리보기'}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
+                      <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-teal-50 to-sky-100 text-3xl shadow-lg dark:border-slate-800 dark:from-slate-700 dark:to-slate-800">
+                      {settings.profileImage ? (
+                        <img
+                          src={settings.profileImage}
+                          alt={isEnglish ? 'Profile preview' : '프로필 미리보기'}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <span aria-label={isEnglish ? 'Emoji profile preview' : '이모티콘 프로필 미리보기'}>{settings.profileEmoji || '😊'}</span>
+                      )}
                       </span>
                       <span className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-teal-500 text-white shadow-md transition-transform group-hover:scale-110 dark:border-slate-900">
                         <Camera className="h-3 w-3" />
@@ -594,7 +607,34 @@ export default function App() {
                     </label>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-3">
+                    <p className="mb-2 text-center text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                      {isEnglish ? 'Choose an avatar' : '아바타 선택'}
+                    </p>
+                    <div className="mx-auto grid w-fit grid-cols-4 gap-2">
+                      {PROFILE_EMOJIS.map((emoji) => {
+                        const isSelected = !settings.profileImage && (settings.profileEmoji || '😊') === emoji;
+                        return (
+                          <button
+                            key={emoji}
+                            type="button"
+                            onClick={() => handleProfileEmojiChange(emoji)}
+                            className={`flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 text-xl transition-all hover:scale-105 dark:bg-slate-800 ${
+                              isSelected
+                                ? 'ring-2 ring-teal-400 ring-offset-2 ring-offset-white dark:ring-teal-300 dark:ring-offset-slate-900'
+                                : 'ring-1 ring-slate-200 dark:ring-slate-700'
+                            }`}
+                            aria-label={`${isEnglish ? 'Select avatar' : '아바타 선택'} ${emoji}`}
+                            aria-pressed={isSelected}
+                          >
+                            {emoji}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
                     <label className="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-400" htmlFor="profile-name">
                       {isEnglish ? 'Nickname' : '닉네임'}
                     </label>
@@ -700,6 +740,7 @@ export default function App() {
             onClearHistory={handleClearHistory}
             profileName={settings.profileName}
             profileImage={settings.profileImage}
+            profileEmoji={settings.profileEmoji}
             language={settings.language}
           />
         )}

@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS = {
   voiceRate: 0.92,
   profileName: '호흡수행자',
   profileImage: '',
+  profileEmoji: '😊',
   customInhale: 4,
   customHold: 2,
   customExhale: 6,

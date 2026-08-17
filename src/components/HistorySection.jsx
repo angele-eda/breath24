@@ -11,6 +11,7 @@ export default function HistorySection({
   onClearHistory,
   profileName,
   profileImage,
+  profileEmoji,
   language = 'ko'
 }) {
   const isEnglish = language === 'en';
@@ -67,7 +68,13 @@ export default function HistorySection({
       <section className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface-card)] px-6 py-2 text-[var(--text-title)] shadow-[0_4px_14px_rgba(30,70,90,0.08)] dark:border-white/10 dark:bg-slate-800/50 dark:text-slate-100 dark:shadow-sm">
         <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
           <div className="relative h-[68px] w-[68px] shrink-0 overflow-hidden rounded-full border border-teal-300/40 bg-slate-800 shadow-[0_0_32px_rgba(45,212,191,0.14)]">
-            <img src={profileImage || USER_AVATAR_URL} alt={isEnglish ? 'Breathing practitioner' : '호흡 수행자'} className="h-full w-full object-cover" />
+            {profileImage ? (
+              <img src={profileImage} alt={isEnglish ? 'Breathing practitioner' : '호흡 수행자'} className="h-full w-full object-cover" />
+            ) : (
+              <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-teal-50 to-sky-100 text-3xl dark:from-slate-700 dark:to-slate-800" aria-label={isEnglish ? 'Emoji profile' : '이모티콘 프로필'}>
+                {profileEmoji || '😊'}
+              </span>
+            )}
           </div>
 
           <div className="flex-1 space-y-4">
