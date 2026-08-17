@@ -589,7 +589,7 @@ export default function App() {
                     <X className="h-4 w-4" />
                   </button>
 
-                  <div className="mt-3 flex justify-center">
+                  <div className="mt-1 flex justify-center">
                     <label className="group relative h-16 w-16 cursor-pointer rounded-full">
                       <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-teal-50 to-sky-100 text-3xl shadow-lg dark:border-slate-800 dark:from-slate-700 dark:to-slate-800">
                       {settings.profileImage ? (
@@ -609,7 +609,7 @@ export default function App() {
                     </label>
                   </div>
 
-                  <div className="mt-3">
+                  <div className="mt-1">
                     <button
                       type="button"
                       onClick={() => setIsAvatarPickerOpen((isOpen) => !isOpen)}
