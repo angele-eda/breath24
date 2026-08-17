@@ -152,5 +152,5 @@ export function getTechniquePhases(technique, settings) {
 
 export function getDurationLabel(technique, settings) {
   const phases = getTechniquePhases(technique, settings);
-  return `${phases.map((phase) => phase.seconds).join(' - ')}초`;
+  return `${phases.map((phase) => phase.seconds).join(' · ')}초`;
 }

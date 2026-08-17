@@ -53,7 +53,7 @@ export default function Dashboard({
   const techniquesExpanded = showAllTechniques && !isCollapsingTechniques;
   const durationLabel = (technique) => {
     if (!isEnglish) return getDurationLabel(technique, settings);
-    return `${technique.phases.map((phase) => phase.seconds).join(' - ')} sec`;
+    return `${technique.phases.map((phase) => phase.seconds).join(' · ')} sec`;
   };
   const startCircleRhythm = currentTechnique.rhythm?.replaceAll('-', ' · ');
   const handleToggleTechniques = () => {
