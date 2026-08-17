@@ -311,24 +311,21 @@ export default function App() {
     setIsPaused(false);
     setIsCompleting(false);
 
-    const isPreparing426 = technique.id === '4-2-6';
     const preparationSeconds = 2.4;
-    if (isPreparing426) {
-      const preparationMeta = {
-        type: 'prepare',
-        label: liveSettings.language === 'ko' ? '호흡 준비' : 'Get ready',
-        seconds: preparationSeconds,
-        instruction: liveSettings.language === 'ko' ? '편안히 숨을 내쉬고 준비해요.' : 'Exhale comfortably and get ready.'
-      };
-      setCurrentPhase('prepareStart');
-      setCurrentPhaseMeta(preparationMeta);
-      setPhaseTimeRemaining(0);
+    const preparationMeta = {
+      type: 'prepare',
+      label: liveSettings.language === 'ko' ? '호흡 준비' : 'Get ready',
+      seconds: preparationSeconds,
+      instruction: liveSettings.language === 'ko' ? '편안히 숨을 내쉬고 준비해요.' : 'Exhale comfortably and get ready.'
+    };
+    setCurrentPhase('prepareStart');
+    setCurrentPhaseMeta(preparationMeta);
+    setPhaseTimeRemaining(0);
+    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (sessionRunIdRef.current === runId) setCurrentPhase('prepare');
-        });
+        if (sessionRunIdRef.current === runId) setCurrentPhase('prepare');
       });
-    }
+    });
 
     const introLanguage = liveSettings.language === 'ko' ? 'ko' : 'en';
     const introGender = liveSettings.voiceGender === 'male' ? 'male' : 'female';
@@ -336,9 +333,7 @@ export default function App() {
     const introPromise = introAudio
       ? playGuideAudio(introAudio, liveSettings.voiceCuesEnabled, liveSettings.voiceVolume / 100)
       : Promise.resolve(false);
-    const preparationPromise = isPreparing426
-      ? new Promise((resolve) => window.setTimeout(resolve, preparationSeconds * 1000))
-      : Promise.resolve();
+    const preparationPromise = new Promise((resolve) => window.setTimeout(resolve, preparationSeconds * 1000));
     await Promise.all([introPromise, preparationPromise]);
     if (sessionRunIdRef.current !== runId || pausedRef.current) return;
     applyPhase(0);
