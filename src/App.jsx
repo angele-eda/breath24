@@ -602,8 +602,8 @@ export default function App() {
                         <span aria-label={isEnglish ? 'Emoji profile preview' : '이모티콘 프로필 미리보기'}>{settings.profileEmoji || '😊'}</span>
                       )}
                       </span>
-                      <span className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-teal-500 text-white shadow-md dark:border-slate-900">
-                        <Camera className="h-3 w-3" />
+                      <span className="absolute -bottom-0.5 -right-0.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-teal-500 text-white shadow-md shadow-teal-900/20 dark:border-slate-900 dark:bg-teal-400 dark:text-slate-950">
+                        <Camera className="h-3.5 w-3.5" strokeWidth={2.5} />
                       </span>
                       <input type="file" accept="image/*" onChange={handleProfileImageChange} className="sr-only" />
                     </label>
