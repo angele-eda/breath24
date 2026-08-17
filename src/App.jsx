@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowUp, BarChart2, Camera, ChevronDown, Compass, LockKeyhole, Moon, Settings as SettingsIcon, Sprout, Sun, Wind, X } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import BreathingTimer from './components/BreathingTimer';
@@ -47,6 +47,13 @@ export default function App() {
   const [todayProgressSeconds, setTodayProgressSeconds] = useState(0);
   const [totalSessionsCount, setTotalSessionsCount] = useState(0);
   const [totalMindfulMinutes, setTotalMindfulMinutes] = useState(0);
+
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
 
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
