@@ -576,7 +576,7 @@ export default function App() {
               </button>
 
               {isProfileEditorOpen && (
-                <div className="fixed inset-x-4 top-20 z-50 mx-auto w-auto max-w-[18rem] rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_20px_55px_rgba(15,23,42,0.18)] backdrop-blur-none dark:border-white/10 dark:bg-slate-900/95 dark:backdrop-blur-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-72">
+                <div className="fixed inset-x-4 top-20 z-50 mx-auto w-auto max-w-[18rem] rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_20px_55px_rgba(15,23,42,0.18)] backdrop-blur-none dark:border-white/10 dark:bg-slate-900 dark:backdrop-blur-none sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-72">
                   <div className="pr-9">
                     <p className="text-base font-bold text-slate-900 dark:text-white">{isEnglish ? 'Edit profile' : '프로필 편집'}</p>
                   </div>
