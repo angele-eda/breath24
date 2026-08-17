@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowUp, BarChart2, Camera, Compass, LockKeyhole, Moon, Settings as SettingsIcon, Sprout, Sun, Wind, X } from 'lucide-react';
+import { ArrowUp, BarChart2, Camera, ChevronDown, Compass, LockKeyhole, Moon, Settings as SettingsIcon, Sprout, Sun, Wind, X } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import BreathingTimer from './components/BreathingTimer';
 import SessionSummary from './components/SessionSummary';
@@ -38,6 +38,7 @@ export default function App() {
   const [sessions, setSessions] = useState(() => getSavedSessions());
   const [selectedTechniqueId, setSelectedTechniqueId] = useState(() => settings.defaultTechniqueId || '4-2-6');
   const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
+  const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
   const [draftProfileName, setDraftProfileName] = useState(() => settings.profileName || '호흡수행자');
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [legalDocumentType, setLegalDocumentType] = useState(initialLegalDocument || 'terms');
@@ -219,6 +220,7 @@ export default function App() {
 
   const handleProfileEmojiChange = (profileEmoji) => {
     handleUpdateSettings({ ...settingsRef.current, profileEmoji, profileImage: '' });
+    setIsAvatarPickerOpen(false);
   };
 
   const saveProfileName = () => {
@@ -608,29 +610,42 @@ export default function App() {
                   </div>
 
                   <div className="mt-3">
-                    <p className="mb-2 text-center text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                      {isEnglish ? 'Choose an avatar' : '아바타 선택'}
-                    </p>
-                    <div className="mx-auto grid w-fit grid-cols-4 gap-2">
-                      {PROFILE_EMOJIS.map((emoji) => {
-                        const isSelected = !settings.profileImage && (settings.profileEmoji || '😊') === emoji;
-                        return (
-                          <button
-                            key={emoji}
-                            type="button"
-                            onClick={() => handleProfileEmojiChange(emoji)}
-                            className={`flex h-9 w-9 items-center justify-center rounded-full text-xl transition-colors ${
-                              isSelected
-                                ? 'bg-teal-50 ring-1 ring-teal-400 dark:bg-teal-950/35 dark:ring-teal-300'
-                                : 'bg-slate-50 ring-1 ring-transparent hover:bg-teal-50/70 dark:bg-slate-800 dark:hover:bg-slate-700'
-                            }`}
-                            aria-label={`${isEnglish ? 'Select avatar' : '아바타 선택'} ${emoji}`}
-                            aria-pressed={isSelected}
-                          >
-                            {emoji}
-                          </button>
-                        );
-                      })}
+                    <button
+                      type="button"
+                      onClick={() => setIsAvatarPickerOpen((isOpen) => !isOpen)}
+                      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                      aria-expanded={isAvatarPickerOpen}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="text-base">{settings.profileImage ? '📷' : (settings.profileEmoji || '😊')}</span>
+                        {isEnglish ? 'Choose an avatar' : '아바타 선택'}
+                      </span>
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isAvatarPickerOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <div className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${isAvatarPickerOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                      <div className="min-h-0 overflow-hidden">
+                        <div className="mx-auto grid w-fit grid-cols-4 gap-2 pt-2">
+                          {PROFILE_EMOJIS.map((emoji) => {
+                            const isSelected = !settings.profileImage && (settings.profileEmoji || '😊') === emoji;
+                            return (
+                              <button
+                                key={emoji}
+                                type="button"
+                                onClick={() => handleProfileEmojiChange(emoji)}
+                                className={`flex h-9 w-9 items-center justify-center rounded-full text-xl transition-colors ${
+                                  isSelected
+                                    ? 'bg-teal-50 ring-1 ring-teal-400 dark:bg-teal-950/35 dark:ring-teal-300'
+                                    : 'bg-slate-50 ring-1 ring-transparent hover:bg-teal-50/70 dark:bg-slate-800 dark:hover:bg-slate-700'
+                                }`}
+                                aria-label={`${isEnglish ? 'Select avatar' : '아바타 선택'} ${emoji}`}
+                                aria-pressed={isSelected}
+                              >
+                                {emoji}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
