@@ -144,10 +144,10 @@ export default function Dashboard({
                 key={option.seconds}
                 type="button"
                 onClick={() => onDurationChange(option.seconds)}
-                className={`border-b-2 px-3 py-1.5 text-[11px] transition-colors ${
+                className={`px-3 py-1.5 text-[11px] font-semibold transition-colors ${
                   isActive
-                    ? 'border-[#24C9B5] font-bold text-[#0E9F90] dark:border-teal-300 dark:text-teal-200'
-                    : 'border-transparent font-semibold text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+                    ? 'text-[#0E9F90] dark:text-teal-200'
+                    : 'text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 aria-pressed={isActive}
               >
@@ -158,10 +158,10 @@ export default function Dashboard({
           <button
             type="button"
             onClick={onOpenDurationSettings}
-            className={`inline-flex items-center gap-1 border-b-2 px-3 py-1.5 text-[11px] transition-colors ${
+            className={`inline-flex items-center gap-1 px-3 py-1.5 text-[11px] font-semibold transition-colors ${
               ![120, 180, 300].includes(settings.defaultDurationSeconds)
-                ? 'border-[#24C9B5] font-bold text-[#0E9F90] dark:border-teal-300 dark:text-teal-200'
-                : 'border-transparent font-semibold text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
+                ? 'text-[#0E9F90] dark:text-teal-200'
+                : 'text-[#71889A] hover:text-[#36566D] dark:text-slate-400 dark:hover:text-slate-200'
             }`}
             aria-label={isEnglish ? 'Custom duration settings' : '맞춤 시간 설정'}
           >
